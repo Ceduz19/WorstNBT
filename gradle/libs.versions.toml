@@ -1,0 +1,7 @@
+[versions]
+annotations = "24.0.1"
+paper = "1.16.5-R0.1-SNAPSHOT"
+
+[libraries]
+annotations = { module = "org.jetbrains:annotations", version.ref = "annotations" }
+paper = { module = "com.destroystokyo.paper:paper-api", version.ref = "paper" }

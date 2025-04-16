@@ -1,0 +1,167 @@
+package me.ceduz19.worstnbt.core;
+
+import me.ceduz19.worstnbt.core.internal.NBTInternal;
+import me.ceduz19.worstnbt.core.util.NMSVer;
+import me.ceduz19.worstnbt.core.util.ReflectionUtils;
+import org.bukkit.Material;
+import org.bukkit.entity.Entity;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
+
+public final class WorstNBT {
+    private static final boolean SUPPORTED = NMSVer.SERVER != NMSVer.UNKNOWN;
+    private static final String PACKAGE_NAME = "me.ceduz19.worstnbt." + NMSVer.SERVER.toString();
+    private static final NBTInternal INTERNAL;
+
+    @ApiStatus.Internal
+    @NotNull
+    public static NBTInternal getInternal() {
+        checkCaller();
+        checkVersion();
+        if (INTERNAL == null) {
+            throw new IllegalStateException("Unable to initialize internal API, if you think this is a bug please report it on LINKGITHUB");
+        }
+        return INTERNAL;
+    }
+
+    @NotNull
+    public static NBTByteArray byteArray(byte[] a) {
+        checkVersion();
+        return INTERNAL.byteArray(a);
+    }
+
+    @NotNull
+    public static NBTCompound compound() {
+        checkVersion();
+        return INTERNAL.compound();
+    }
+
+    @NotNull
+    public static NBTEnd end() {
+        checkVersion();
+        return INTERNAL.end();
+    }
+
+    @NotNull
+    public static NBTIntArray intArray(int[] a) {
+        checkVersion();
+        return INTERNAL.intArray(a);
+    }
+
+    @NotNull
+    public static NBTList list() {
+        checkVersion();
+        return INTERNAL.list();
+    }
+
+    @NotNull
+    public static NBTLongArray longArray(long[] a) {
+        checkVersion();
+        if (NMSVer.SERVER.isBefore(NMSVer.V1_12_R1))
+            throw new UnsupportedOperationException("Long array NBT is not implemented in this minecraft version (" +
+                    NMSVer.MC_SERVER_VER + "), must be at least 1.12");
+
+        return INTERNAL.longArray(a);
+    }
+
+    @NotNull
+    public static NBTNumeric.Byte byteNum(byte b) {
+        checkVersion();
+        return INTERNAL.byteNum(b);
+    }
+
+    @NotNull
+    public static NBTNumeric.Short shortNum(short s) {
+        checkVersion();
+        return INTERNAL.shortNum(s);
+    }
+
+    @NotNull
+    public static NBTNumeric.Int intNum(int i) {
+        checkVersion();
+        return INTERNAL.intNum(i);
+    }
+
+    @NotNull
+    public static NBTNumeric.Long longNum(long l) {
+        checkVersion();
+        return INTERNAL.longNum(l);
+    }
+
+    @NotNull
+    public static NBTNumeric.Float floatNum(float f) {
+        checkVersion();
+        return INTERNAL.floatNum(f);
+    }
+
+    @NotNull
+    public static NBTNumeric.Double doubleNum(double d) {
+        checkVersion();
+        return INTERNAL.doubleNum(d);
+    }
+
+    @NotNull
+    public static NBTString string(String s) {
+        checkVersion();
+        if (s == null) throw new NullPointerException("string");
+        return INTERNAL.string(s);
+    }
+
+    @NotNull
+    public static NBTCompound fromItemStack(ItemStack itemStack) {
+        checkVersion();
+        if (itemStack == null) throw new NullPointerException("itemStack");
+        if (itemStack.getType() == Material.AIR || itemStack.getAmount() <= 0)
+            throw new IllegalArgumentException("itemStack is air or amount is less or equal to 0");
+        return INTERNAL.fromItemStack(itemStack);
+    }
+
+    @NotNull
+    public static NBTCompound fromEntity(Entity entity) {
+        checkVersion();
+        if (entity == null) throw new NullPointerException("entity");
+        return INTERNAL.fromEntity(entity);
+    }
+
+    @NotNull
+    public static NBTCompound fromFile(File file) throws IOException {
+        checkVersion();
+        if (file == null) throw new NullPointerException("file");
+        return INTERNAL.fromFile(file);
+    }
+
+    @NotNull
+    public static NBTCompound fromInputStream(InputStream inputStream) throws IOException {
+        checkVersion();
+        if (inputStream == null) throw new NullPointerException("inputStream");
+        return INTERNAL.fromInputStream(inputStream);
+    }
+
+    private static void checkVersion() {
+        if (!SUPPORTED)
+            throw new IllegalStateException("WorstNBT does not support this minecraft version (Minecraft version: " + NMSVer.MC_SERVER_VER + ")");
+    }
+
+    private static void checkCaller() {
+        StackTraceElement caller;
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        if (stackTrace.length >= 4 && !(caller = stackTrace[3]).getClassName().startsWith(PACKAGE_NAME))
+            throw new IllegalStateException("Cannot access internal API outside of its scopes (caller: " + caller.getClassName() + "#" + caller.getMethodName() + ")");
+    }
+
+    static {
+        if (NMSVer.SERVER == NMSVer.UNKNOWN) {
+            INTERNAL = null;
+        } else {
+            Class<?> clazz = ReflectionUtils.getClass(PACKAGE_NAME + ".WorstNBTInternal");
+            Constructor<?> constructor = clazz == null ? null : ReflectionUtils.getConstructor(clazz, true);
+            INTERNAL = constructor == null ? null : (NBTInternal) ReflectionUtils.invokeConstructor(constructor, new Object[0]);
+        }
+    }
+}
