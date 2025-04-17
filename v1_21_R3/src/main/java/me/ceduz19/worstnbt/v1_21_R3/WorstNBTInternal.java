@@ -37,7 +37,8 @@ class WorstNBTInternal implements NBTInternal {
             case FloatTag tag -> new WorstNBTNumeric.Float(tag);
             case DoubleTag tag -> new WorstNBTNumeric.Double(tag);
             case StringTag tag -> new WorstNBTString(tag);
-            default -> throw new IllegalStateException("Unable to convert to worst NBT: " + nms.getClass().getCanonicalName() + " is an unknown Tag implementation");
+            default -> throw new IllegalStateException("Unable to convert to worst NBT: " + nms.getClass().getCanonicalName() +
+                    " is an unknown " + Tag.class.getCanonicalName() + " implementation");
         };
     }
 

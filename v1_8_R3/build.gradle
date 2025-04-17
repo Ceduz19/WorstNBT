@@ -1,0 +1,14 @@
+plugins {
+    id 'java'
+}
+
+group = 'me.ceduz19.worstnbt'
+version = '1.0-SNAPSHOT'
+
+dependencies {
+    compileOnly files("libs/spigot-1.8.8.jar")
+    compileOnly libs.annotations
+    compileOnly project(":core")
+}
+
+java.toolchain.setLanguageVersion(JavaLanguageVersion.of(8))

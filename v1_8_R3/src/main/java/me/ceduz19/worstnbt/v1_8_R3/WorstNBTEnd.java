@@ -1,0 +1,47 @@
+package me.ceduz19.worstnbt.v1_8_R3;
+
+import me.ceduz19.worstnbt.core.NBTEnd;
+import me.ceduz19.worstnbt.core.NBTType;
+import me.ceduz19.worstnbt.core.util.ReflectionUtils;
+import net.minecraft.server.v1_8_R3.NBTBase;
+import net.minecraft.server.v1_8_R3.NBTTagEnd;
+import org.jetbrains.annotations.NotNull;
+
+import java.lang.reflect.Method;
+
+class WorstNBTEnd implements NBTEnd {
+
+    public static final WorstNBTEnd INSTANCE = new WorstNBTEnd();
+    private static final NBTTagEnd HANDLE;
+
+    private WorstNBTEnd() {}
+
+    @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
+    @Override
+    public @NotNull Object getHandle() {
+        if (HANDLE == null)
+            throw new IllegalStateException("unable to get handle: could not create an instance of NBTTagEnd");
+        return HANDLE;
+    }
+
+    public int hashCode() {
+        return NBTType.END.asId();
+    }
+
+    public boolean equals(Object obj) {
+        return obj instanceof WorstNBTEnd || obj instanceof NBTTagEnd;
+    }
+
+    public String toString() {
+        return "END";
+    }
+
+    static {
+        Method m = ReflectionUtils.getMethod(NBTBase.class, "createTag", true, Byte.TYPE);
+        HANDLE = m == null ? null : (NBTTagEnd) ReflectionUtils.invokeMethod(m, null, 0);
+    }
+}
