@@ -216,6 +216,8 @@ class WorstNBTCompound implements NBTCompound {
         if (opt.isEmpty()) return false;
 
         org.bukkit.inventory.ItemStack newItemStack = opt.get().asBukkitMirror();
+        //noinspection deprecation
+        itemStack.setType(newItemStack.getType());
         itemStack.setAmount(newItemStack.getAmount());
         itemStack.setItemMeta(newItemStack.getItemMeta());
         return true;

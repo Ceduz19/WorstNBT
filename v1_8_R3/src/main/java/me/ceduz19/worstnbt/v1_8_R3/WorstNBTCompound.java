@@ -4,16 +4,16 @@ import me.ceduz19.worstnbt.core.*;
 import net.minecraft.server.v1_8_R3.NBTBase;
 import net.minecraft.server.v1_8_R3.NBTCompressedStreamTools;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
-import net.minecraft.server.v1_8_R3.NBTTagIntArray;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_8_R3.util.CraftMagicNumbers;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.DataOutput;
 import java.io.DataOutputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
@@ -49,11 +49,7 @@ class WorstNBTCompound implements NBTCompound {
 
     @Override
     public boolean hasUUID(@NotNull String key) {
-        if (this.contains(key + "Most", NBTType.ANY_NUMERIC) && this.contains(key + "Least", NBTType.ANY_NUMERIC))
-            return true;
-
-        NBTBase nbt = this.handle.get(key);
-        return nbt instanceof NBTTagIntArray && ((NBTTagIntArray) nbt).c().length == 4;
+        return this.contains(key + "Most", NBTType.ANY_NUMERIC) && this.contains(key + "Least", NBTType.ANY_NUMERIC);
     }
 
     @Override
@@ -88,19 +84,16 @@ class WorstNBTCompound implements NBTCompound {
 
     @Override
     public void putUUID(@NotNull String key, @Nullable UUID value) {
+        if (value != null) {
+            this.handle.setLong(key + "Most", value.getMostSignificantBits());
+            this.handle.setLong(key + "Least", value.getLeastSignificantBits());
+            return;
+        }
+
         if (this.handle.hasKeyOfType(key + "Most", NBTType.ANY_NUMERIC.asId()) && this.handle.hasKeyOfType(key + "Least", NBTType.ANY_NUMERIC.asId())) {
             this.handle.remove(key + "Most");
             this.handle.remove(key + "Least");
         }
-
-        if (value == null) {
-            if (this.handle.hasKeyOfType(key, NBTType.INT_ARRAY.asId())) this.handle.c().remove(key);
-            return;
-        }
-
-        long most = value.getMostSignificantBits();
-        long least = value.getLeastSignificantBits();
-        this.handle.set(key, new NBTTagIntArray(new int[]{(int)(most >> 32), (int)most, (int)(least >> 32), (int)least}));
     }
 
     @Override
@@ -171,14 +164,6 @@ class WorstNBTCompound implements NBTCompound {
 
     @Override
     public @NotNull UUID getUUID(@NotNull String key) {
-        if (this.handle.hasKeyOfType(key, NBTType.INT_ARRAY.asId())) {
-            int[] array = this.handle.getIntArray(key);
-            if (array.length != 4)
-                throw new IllegalStateException("Expected UUID array to be of length 4, but found " + array.length);
-
-            return new UUID((long)array[0] << 32 | (long)array[1] & Long.MAX_VALUE, (long)array[2] << 32 | (long)array[3] & Long.MAX_VALUE);
-        }
-
         if (!this.handle.hasKeyOfType(key + "Most", NBTType.ANY_NUMERIC.asId()) || !this.handle.hasKeyOfType(key + "Least", NBTType.ANY_NUMERIC.asId()))
             throw new IllegalStateException(key + "Most and " + key + "Least keys must be of any numeric type in order to get an UUID");
 
@@ -239,9 +224,11 @@ class WorstNBTCompound implements NBTCompound {
 
     @Override
     public boolean applyToItemStack(@NotNull ItemStack itemStack) {
-        net.minecraft.server.v1_8_R3.ItemStack nms = net.minecraft.server.v1_8_R3.ItemStack.createStack(this.handle);
-        if (nms == null) return false;
+        net.minecraft.server.v1_8_R3.ItemStack nms = CraftItemStack.asNMSCopy(itemStack);
+        nms.c(handle);
 
+        itemStack.setType(CraftMagicNumbers.getMaterial(nms.getItem()));
+        itemStack.setAmount(nms.count);
         itemStack.setItemMeta(CraftItemStack.asCraftMirror(nms).getItemMeta());
         return true;
     }
@@ -261,7 +248,7 @@ class WorstNBTCompound implements NBTCompound {
     public boolean saveToPath(@NotNull Path path, boolean compressed) {
         try {
             if (compressed) NBTCompressedStreamTools.a(this.handle, Files.newOutputStream(path));
-            else NBTCompressedStreamTools.a(this.handle, (OutputStream) new DataOutputStream(Files.newOutputStream(path)));
+            else NBTCompressedStreamTools.a(this.handle, (DataOutput) new DataOutputStream(Files.newOutputStream(path)));
 
             return true;
         } catch (Exception e) {

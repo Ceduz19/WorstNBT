@@ -64,7 +64,7 @@ class WorstNBTIntArray extends AbstractList<NBTNumeric.Int> implements NBTIntArr
     public boolean setNBT(int index, @NotNull NBT value) {
         if (!(value instanceof NBTNumeric)) return false;
 
-        Array.set(this.handle.c(), index, ((NBTNumeric)value).getAsByte());
+        Array.set(this.handle.c(), index, ((NBTNumeric)value).getAsInt());
         return true;
     }
 
@@ -72,7 +72,7 @@ class WorstNBTIntArray extends AbstractList<NBTNumeric.Int> implements NBTIntArr
     public boolean addNBT(int index, @NotNull NBT value) {
         if (!(value instanceof NBTNumeric) || FIELD_DATA == null) return false;
 
-        ReflectionUtils.writeField(FIELD_DATA, this.handle, ArrayUtils.add(this.handle.c(), index, ((NBTNumeric)value).getAsByte()));
+        ReflectionUtils.writeField(FIELD_DATA, this.handle, ArrayUtils.add(this.handle.c(), index, ((NBTNumeric)value).getAsInt()));
         return false;
     }
 
@@ -95,7 +95,7 @@ class WorstNBTIntArray extends AbstractList<NBTNumeric.Int> implements NBTIntArr
         if (!obj.getClass().isArray()) return false;
 
         Class<?> type = obj.getClass().getComponentType();
-        if (type == Integer.TYPE) return Arrays.equals(this.handle.c(), (int[])obj);
+        if (type == int.class) return Arrays.equals(this.handle.c(), (int[])obj);
 
         if (type != Integer.class) return false;
 

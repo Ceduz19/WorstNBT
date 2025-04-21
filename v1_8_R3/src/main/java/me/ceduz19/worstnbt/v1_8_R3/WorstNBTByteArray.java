@@ -96,7 +96,7 @@ class WorstNBTByteArray extends AbstractList<NBTNumeric.Byte> implements NBTByte
         if (!obj.getClass().isArray()) return false;
 
         Class<?> type = obj.getClass().getComponentType();
-        if (type == Byte.TYPE) return Arrays.equals(this.handle.c(), (byte[])obj);
+        if (type == byte.class) return Arrays.equals(this.handle.c(), (byte[])obj);
 
         if (type != Byte.class) return false;
 

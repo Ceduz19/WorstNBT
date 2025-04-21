@@ -79,7 +79,7 @@ class WorstNBTList extends AbstractList<NBT> implements NBTList {
     @Override
     public short getShort(int index) {
         NBTBase nbt = this.handle.g(index);
-        return nbt instanceof NBTTagShort ? ((NBTTagShort) nbt).e() : (short)0;
+        return nbt instanceof NBTTagShort ? ((NBTTagShort) nbt).e() : 0;
     }
 
     @Override
