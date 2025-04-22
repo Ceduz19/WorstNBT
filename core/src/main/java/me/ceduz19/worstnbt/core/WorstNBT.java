@@ -6,6 +6,7 @@ import me.ceduz19.worstnbt.core.util.ReflectionUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -127,6 +128,12 @@ public final class WorstNBT {
         checkVersion();
         if (entity == null) throw new NullPointerException("entity");
         return INTERNAL.fromEntity(entity);
+    }
+
+    public static NBTCompound fromScoreboard(Scoreboard scoreboard) {
+        checkVersion();
+        if (scoreboard == null) throw new NullPointerException("scoreboard");
+        return INTERNAL.fromScoreboard(scoreboard);
     }
 
     @NotNull

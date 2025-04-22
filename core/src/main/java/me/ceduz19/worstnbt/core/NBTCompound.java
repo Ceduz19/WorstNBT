@@ -2,6 +2,7 @@ package me.ceduz19.worstnbt.core;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -10,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -28,6 +30,10 @@ public interface NBTCompound extends NBT {
         return WorstNBT.fromEntity(entity);
     }
 
+    static @NotNull NBTCompound fromScoreboard(Scoreboard scoreboard) {
+        return WorstNBT.fromScoreboard(scoreboard);
+    }
+
     static @NotNull NBTCompound fromFile(File file) throws IOException {
         return WorstNBT.fromFile(file);
     }
@@ -38,50 +44,59 @@ public interface NBTCompound extends NBT {
 
     @NotNull Set<String> getAllKeys();
 
-    boolean contains(@NotNull String var1);
-    boolean contains(@NotNull String var1, @NotNull NBTType var2);
-    boolean hasUUID(@NotNull String var1);
+    boolean contains(@NotNull String key);
+    boolean contains(@NotNull String key, @NotNull NBTType type);
+    boolean hasUUID(@NotNull String key);
 
-    @Nullable NBT put(@NotNull String var1, @Nullable NBT var2);
-    void putByte(@NotNull String var1, byte var2);
-    void putShort(@NotNull String var1, short var2);
-    void putInt(@NotNull String var1, int var2);
-    void putLong(@NotNull String var1, long var2);
-    void putUUID(@NotNull String var1, @Nullable UUID var2);
-    void putFloat(@NotNull String var1, float var2);
-    void putDouble(@NotNull String var1, double var2);
-    void putString(@NotNull String var1, @Nullable String var2);
-    void putByteArray(@NotNull String var1, byte[] var2);
-    void putIntArray(@NotNull String var1, int[] var2);
-    void putLongArray(@NotNull String var1, long[] var2);
-    void putBoolean(@NotNull String var1, boolean var2);
+    @Nullable NBT put(@NotNull String key, @Nullable NBT nbt);
+    void putByte(@NotNull String key, byte b);
+    void putShort(@NotNull String key, short s);
+    void putInt(@NotNull String key, int i);
+    void putLong(@NotNull String key, long l);
+    void putUUID(@NotNull String key, @Nullable UUID uuid);
+    void putFloat(@NotNull String key, float f);
+    void putDouble(@NotNull String key, double d);
+    void putString(@NotNull String key, @Nullable String string);
+    void putByteArray(@NotNull String key, byte[] array);
+    void putIntArray(@NotNull String key, int[] array);
+    void putLongArray(@NotNull String key, long[] array);
+    void putBoolean(@NotNull String key, boolean bool);
 
-    @NotNull NBTType getType(@NotNull String var1);
+    @NotNull NBTType getType(@NotNull String key);
 
-    @Nullable NBT get(@NotNull String var1);
-    byte getByte(@NotNull String var1);
-    short getShort(@NotNull String var1);
-    int getInt(@NotNull String var1);
-    long getLong(@NotNull String var1);
-    @NotNull UUID getUUID(@NotNull String var1);
-    float getFloat(@NotNull String var1);
-    double getDouble(@NotNull String var1);
-    @NotNull String getString(@NotNull String var1);
-    byte[] getByteArray(@NotNull String var1);
-    int[] getIntArray(@NotNull String var1);
-    long[] getLongArray(@NotNull String var1);
-    boolean getBoolean(@NotNull String var1);
-    @NotNull NBTCompound getCompound(@NotNull String var1);
-    @NotNull NBTList getList(@NotNull String var1, @NotNull NBTType var2);
+    @Nullable NBT get(@NotNull String key);
+    byte getByte(@NotNull String key);
+    short getShort(@NotNull String key);
+    int getInt(@NotNull String key);
+    long getLong(@NotNull String key);
+    @NotNull UUID getUUID(@NotNull String key);
+    float getFloat(@NotNull String key);
+    double getDouble(@NotNull String key);
+    @NotNull String getString(@NotNull String key);
+    byte[] getByteArray(@NotNull String key);
+    int[] getIntArray(@NotNull String key);
+    long[] getLongArray(@NotNull String key);
+    boolean getBoolean(@NotNull String key);
+    @NotNull NBTCompound getCompound(@NotNull String key);
+    @NotNull NBTList getList(@NotNull String key, @NotNull NBTType elementType);
 
     @NotNull NBTCompound merge(@NotNull NBTCompound var1);
 
-    boolean applyToItemStack(@NotNull ItemStack var1);
-    boolean applyToEntity(@NotNull Entity var1);
+    // APPLY METHODS
+
+    boolean applyToItemStack(@NotNull ItemStack itemStack);
+
+    boolean applyToEntity(@NotNull Entity entity);
+
+    boolean applyToScoreboard(@NotNull Scoreboard scoreboard);
+
     default boolean saveToFile(@NotNull File file, boolean compressed) {
         return this.saveToPath(file.toPath(), compressed);
     }
-    boolean saveToPath(@NotNull Path var1, boolean var2);
+
+    boolean saveToPath(@NotNull Path path, boolean compressed);
+
+    // DEFAULT METHODS
 
     @Override
     default @NotNull NBTType getType() {
@@ -100,10 +115,39 @@ public interface NBTCompound extends NBT {
         return this.contains(key, NBTType.COMPOUND) ? this.getCompound(key) : null;
     }
 
-    default @Nullable NBTList getListOrNull(@NotNull String key, @NotNull NBTType type) {
+    default @Nullable NBTList getListOrNull(@NotNull String key, @NotNull NBTType elementType) {
         if (!this.contains(key, NBTType.LIST)) return null;
 
-        NBTList list = (NBTList)this.get(key);
-        return list != null && list.getElementType() == type ? list : null;
+        NBTList list = (NBTList) this.get(key);
+        return list != null && (elementType == NBTType.END || list.isEmpty() || list.getElementType() == elementType) ? list : null;
+    }
+
+    default @NotNull NBTCompound getOrCreateCompound(@NotNull String key) {
+        if (contains(key, NBTType.COMPOUND)) return getCompound(key);
+
+        NBTCompound compound = create();
+        put(key, compound);
+        return compound;
+    }
+
+    default @NotNull NBTList getOrCreateList(@NotNull String key, @NotNull NBTType elementType) {
+        NBTList list;
+
+        if (contains(key, NBTType.LIST)) {
+            list = Objects.requireNonNull((NBTList) get(key));
+
+            // if we want a list of a specific type; in case the contained one is not empty (then is of a type)
+            // and is not of the desired type, create a new one
+            if (elementType != NBTType.END && !list.isEmpty() && elementType != list.getElementType()) {
+                list = NBTList.create();
+                put(key, list);
+            }
+
+        } else {
+            list = NBTList.create();
+            put(key, list);
+        }
+
+        return list;
     }
 }

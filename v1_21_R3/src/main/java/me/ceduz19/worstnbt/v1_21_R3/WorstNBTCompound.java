@@ -5,9 +5,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.ServerScoreboard;
 import net.minecraft.world.item.ItemStack;
 import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.craftbukkit.scoreboard.CraftScoreboard;
 import org.bukkit.entity.Entity;
+import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,77 +53,77 @@ class WorstNBTCompound implements NBTCompound {
     }
 
     @Override
-    public @Nullable NBT put(@NotNull String key, @Nullable NBT value) {
+    public @Nullable NBT put(@NotNull String key, @Nullable NBT nbt) {
         Tag old;
-        if (value == null) {
+        if (nbt == null) {
             old = this.handle.get(key);
             this.handle.remove(key);
         } else {
-            old = this.handle.put(key, (Tag) value.getHandle());
+            old = this.handle.put(key, (Tag) nbt.getHandle());
         }
         return old == null ? null : WorstNBT.getInternal().toWorst(old);
     }
 
     @Override
-    public void putByte(@NotNull String key, byte value) {
-        this.handle.putByte(key, value);
+    public void putByte(@NotNull String key, byte b) {
+        this.handle.putByte(key, b);
     }
 
     @Override
-    public void putShort(@NotNull String key, short value) {
-        this.handle.putShort(key, value);
+    public void putShort(@NotNull String key, short s) {
+        this.handle.putShort(key, s);
     }
 
     @Override
-    public void putInt(@NotNull String key, int value) {
-        this.handle.putInt(key, value);
+    public void putInt(@NotNull String key, int i) {
+        this.handle.putInt(key, i);
     }
 
     @Override
-    public void putLong(@NotNull String key, long value) {
-        this.handle.putLong(key, value);
+    public void putLong(@NotNull String key, long l) {
+        this.handle.putLong(key, l);
     }
 
     @Override
-    public void putUUID(@NotNull String key, @Nullable UUID value) {
-        if (value != null) this.handle.putUUID(key, value);
+    public void putUUID(@NotNull String key, @Nullable UUID uuid) {
+        if (uuid != null) this.handle.putUUID(key, uuid);
         else if (this.hasUUID(key)) this.handle.remove(key);
     }
 
     @Override
-    public void putFloat(@NotNull String key, float value) {
-        this.handle.putFloat(key, value);
+    public void putFloat(@NotNull String key, float f) {
+        this.handle.putFloat(key, f);
     }
 
     @Override
-    public void putDouble(@NotNull String key, double value) {
-        this.handle.putDouble(key, value);
+    public void putDouble(@NotNull String key, double d) {
+        this.handle.putDouble(key, d);
     }
 
     @Override
-    public void putString(@NotNull String key, @Nullable String value) {
-        if (value != null) this.handle.putString(key, value);
+    public void putString(@NotNull String key, @Nullable String string) {
+        if (string != null) this.handle.putString(key, string);
         else if (this.getType(key) == NBTType.STRING) this.handle.remove(key);
     }
 
     @Override
-    public void putByteArray(@NotNull String key, byte[] value) {
-        this.handle.putByteArray(key, value);
+    public void putByteArray(@NotNull String key, byte[] array) {
+        this.handle.putByteArray(key, array);
     }
 
     @Override
-    public void putIntArray(@NotNull String key, int[] value) {
-        this.handle.putIntArray(key, value);
+    public void putIntArray(@NotNull String key, int[] array) {
+        this.handle.putIntArray(key, array);
     }
 
     @Override
-    public void putLongArray(@NotNull String key, long[] value) {
-        this.handle.putLongArray(key, value);
+    public void putLongArray(@NotNull String key, long[] array) {
+        this.handle.putLongArray(key, array);
     }
 
     @Override
-    public void putBoolean(@NotNull String key, boolean value) {
-        this.handle.putBoolean(key, value);
+    public void putBoolean(@NotNull String key, boolean bool) {
+        this.handle.putBoolean(key, bool);
     }
 
     @Override
@@ -200,8 +203,8 @@ class WorstNBTCompound implements NBTCompound {
     }
 
     @Override
-    public @NotNull NBTList getList(@NotNull String key, @NotNull NBTType type) {
-        return new WorstNBTList(this.handle.getList(key, type.asId()));
+    public @NotNull NBTList getList(@NotNull String key, @NotNull NBTType elementType) {
+        return new WorstNBTList(this.handle.getList(key, elementType.asId()));
     }
 
     @Override
@@ -232,6 +235,13 @@ class WorstNBTCompound implements NBTCompound {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    @Override
+    public boolean applyToScoreboard(@NotNull Scoreboard scoreboard) {
+        ServerScoreboard nms = (ServerScoreboard) ((CraftScoreboard) scoreboard).getHandle();
+        nms.dataFactory().deserializer().apply(this.handle, MinecraftServer.getServer().registries().compositeAccess());
+        return true;
     }
 
     @Override

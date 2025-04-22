@@ -3,12 +3,14 @@ package me.ceduz19.worstnbt.v1_21_R3;
 import me.ceduz19.worstnbt.core.*;
 import me.ceduz19.worstnbt.core.internal.NBTInternal;
 import net.minecraft.nbt.*;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.ServerScoreboard;
 import net.minecraft.world.item.ItemStack;
-import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.scoreboard.CraftScoreboard;
 import org.bukkit.entity.Entity;
+import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInputStream;
@@ -43,8 +45,8 @@ class WorstNBTInternal implements NBTInternal {
     }
 
     @Override
-    public @NotNull NBTByteArray byteArray(byte[] a2) {
-        return new WorstNBTCollection.ByteArray(a2);
+    public @NotNull NBTByteArray byteArray(byte[] array) {
+        return new WorstNBTCollection.ByteArray(array);
     }
 
     @Override
@@ -58,8 +60,8 @@ class WorstNBTInternal implements NBTInternal {
     }
 
     @Override
-    public @NotNull NBTIntArray intArray(int[] a2) {
-        return new WorstNBTCollection.IntArray(a2);
+    public @NotNull NBTIntArray intArray(int[] array) {
+        return new WorstNBTCollection.IntArray(array);
     }
 
     @Override
@@ -68,8 +70,8 @@ class WorstNBTInternal implements NBTInternal {
     }
 
     @Override
-    public @NotNull NBTLongArray longArray(long[] a2) {
-        return new WorstNBTCollection.LongArray(a2);
+    public @NotNull NBTLongArray longArray(long[] array) {
+        return new WorstNBTCollection.LongArray(array);
     }
 
     @Override
@@ -103,16 +105,15 @@ class WorstNBTInternal implements NBTInternal {
     }
 
     @Override
-    public @NotNull NBTString string(@NotNull String s) {
-        return new WorstNBTString(s);
+    public @NotNull NBTString string(@NotNull String string) {
+        return new WorstNBTString(string);
     }
 
 
     @Override
     public @NotNull NBTCompound fromItemStack(@NotNull org.bukkit.inventory.ItemStack itemStack) {
-        CraftServer craftServer = (CraftServer) Bukkit.getServer();
         ItemStack nms = CraftItemStack.asNMSCopy(itemStack);
-        return new WorstNBTCompound((CompoundTag) nms.save(craftServer.getServer().registries().compositeAccess()));
+        return new WorstNBTCompound((CompoundTag) nms.save(MinecraftServer.getServer().registries().compositeAccess()));
     }
 
     @Override
@@ -125,6 +126,15 @@ class WorstNBTInternal implements NBTInternal {
 
         nms.saveWithoutId(tag, true, false, false);
         return new WorstNBTCompound(tag);
+    }
+
+    @Override
+    public @NotNull NBTCompound fromScoreboard(@NotNull Scoreboard scoreboard) {
+        ServerScoreboard nms = (ServerScoreboard) ((CraftScoreboard) scoreboard).getHandle();
+        CompoundTag nbt = new CompoundTag();
+
+        nms.dataFactory().constructor().get().save(nbt, MinecraftServer.getServer().registries().compositeAccess());
+        return new WorstNBTCompound(nbt);
     }
 
     @Override

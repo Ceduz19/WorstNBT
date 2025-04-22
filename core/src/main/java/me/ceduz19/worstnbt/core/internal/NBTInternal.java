@@ -3,6 +3,7 @@ package me.ceduz19.worstnbt.core.internal;
 import me.ceduz19.worstnbt.core.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,39 +17,41 @@ public interface NBTInternal {
 
     @NotNull NBT toWorst(@NotNull Object var1);
 
-    @NotNull NBTByteArray byteArray(byte[] var1);
-
     @NotNull NBTCompound compound();
-
-    @NotNull NBTEnd end();
-
-    @NotNull NBTIntArray intArray(int[] var1);
 
     @NotNull NBTList list();
 
-    @NotNull NBTLongArray longArray(long[] var1);
+    @NotNull NBTEnd end();
 
-    @NotNull NBTNumeric.Byte byteNum(byte var1);
+    @NotNull NBTByteArray byteArray(byte[] array);
 
-    @NotNull NBTNumeric.Short shortNum(short var1);
+    @NotNull NBTIntArray intArray(int[] array);
 
-    @NotNull NBTNumeric.Int intNum(int var1);
+    @NotNull NBTLongArray longArray(long[] array);
 
-    @NotNull NBTNumeric.Long longNum(long var1);
+    @NotNull NBTNumeric.Byte byteNum(byte b);
 
-    @NotNull NBTNumeric.Float floatNum(float var1);
+    @NotNull NBTNumeric.Short shortNum(short s);
 
-    @NotNull NBTNumeric.Double doubleNum(double var1);
+    @NotNull NBTNumeric.Int intNum(int i);
 
-    @NotNull NBTString string(@NotNull String var1);
+    @NotNull NBTNumeric.Long longNum(long l);
 
-    @NotNull NBTCompound fromItemStack(@NotNull ItemStack var1);
+    @NotNull NBTNumeric.Float floatNum(float f);
 
-    @NotNull NBTCompound fromEntity(@NotNull Entity var1);
+    @NotNull NBTNumeric.Double doubleNum(double d);
+
+    @NotNull NBTString string(@NotNull String string);
+
+    @NotNull NBTCompound fromItemStack(@NotNull ItemStack itemStack);
+
+    @NotNull NBTCompound fromEntity(@NotNull Entity entity);
+
+    @NotNull NBTCompound fromScoreboard(@NotNull Scoreboard scoreboard);
 
     default @NotNull NBTCompound fromFile(@NotNull File file) throws IOException {
         return this.fromInputStream(Files.newInputStream(file.toPath()));
     }
 
-    @NotNull NBTCompound fromInputStream(@NotNull InputStream var1) throws IOException;
+    @NotNull NBTCompound fromInputStream(@NotNull InputStream inputStream) throws IOException;
 }
