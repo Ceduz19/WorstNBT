@@ -123,6 +123,7 @@ class WorstNBTCompound implements NBTCompound {
 
     @Override
     public void putLongArray(@NotNull String key, long[] array) {
+        put(key, new WorstNBTLongArray(array));
     }
 
     @Override
@@ -196,7 +197,8 @@ class WorstNBTCompound implements NBTCompound {
 
     @Override
     public long[] getLongArray(@NotNull String key) {
-        return new long[0];
+        NBT nbt = get(key);
+        return nbt instanceof WorstNBTLongArray ? ((WorstNBTLongArray) nbt).getAsLongArray() : new long[0];
     }
 
     @Override

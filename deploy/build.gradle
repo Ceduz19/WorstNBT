@@ -1,0 +1,34 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '8.1.1' apply false
+}
+
+final List<String> commonProjects = List.of("core", "v1_8_R3", "v1_12_R1", "v1_21_R3")
+final String name = rootProject.name
+final String version = rootProject.version
+tasks.register("libShadowJar", ShadowJar) {
+    archiveBaseName = name
+    archiveVersion = version
+    archiveClassifier = null
+
+    commonProjects.forEach(prj -> { from project(":" + prj).sourceSets.main.output })
+}
+
+tasks.register("pluginShadowJar", ShadowJar) {
+    archiveBaseName = name
+    archiveVersion = version
+    archiveClassifier = null
+    archiveAppendix = "plugin"
+
+    commonProjects.forEach(prj -> { from project(":" + prj).sourceSets.main.output })
+    from project(":plugin").sourceSets.main.output
+}
+
+sourceSets {
+    main {
+        java { srcDirs = [] }
+        resources { srcDirs = [] }
+    }
+}

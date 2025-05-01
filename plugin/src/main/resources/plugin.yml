@@ -1,0 +1,9 @@
+name: WorstNBT
+version: '${version}'
+main: me.ceduz19.worstnbt.plugin.WorstNBTPlugin
+api-version: '1.13'
+load: STARTUP
+commands:
+  worstnbt:
+    aliases: [wnbt]
+
