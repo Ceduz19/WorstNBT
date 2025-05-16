@@ -26,6 +26,7 @@ class WorstNBTInternal implements NBTInternal {
         if (nms instanceof NBTTagCompound) return new WorstNBTCompound((NBTTagCompound)nms);
         if (nms instanceof NBTTagEnd) return WorstNBTEnd.INSTANCE;
         if (nms instanceof NBTTagIntArray) return new WorstNBTIntArray((NBTTagIntArray)nms);
+        if (nms instanceof NBTTagLongArray) return new WorstNBTLongArray((NBTTagLongArray)nms);
         if (nms instanceof NBTTagList) return new WorstNBTList((NBTTagList)nms);
         if (nms instanceof NBTTagByte) return new WorstNBTNumeric.Byte((NBTTagByte)nms);
         if (nms instanceof NBTTagShort) return new WorstNBTNumeric.Short((NBTTagShort)nms);

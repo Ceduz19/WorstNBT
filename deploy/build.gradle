@@ -8,7 +8,7 @@ plugins {
 final List<String> commonProjects = List.of("core", "v1_8_R3", "v1_12_R1", "v1_21_R3")
 final String name = rootProject.name
 final String version = rootProject.version
-tasks.register("libShadowJar", ShadowJar) {
+def libTask = tasks.register("libShadowJar", ShadowJar) {
     archiveBaseName = name
     archiveVersion = version
     archiveClassifier = null
@@ -16,7 +16,7 @@ tasks.register("libShadowJar", ShadowJar) {
     commonProjects.forEach(prj -> { from project(":" + prj).sourceSets.main.output })
 }
 
-tasks.register("pluginShadowJar", ShadowJar) {
+def pluginTask = tasks.register("pluginShadowJar", ShadowJar) {
     archiveBaseName = name
     archiveVersion = version
     archiveClassifier = null
@@ -31,4 +31,8 @@ sourceSets {
         java { srcDirs = [] }
         resources { srcDirs = [] }
     }
+}
+
+tasks.assemble {
+    dependsOn libTask, pluginTask
 }

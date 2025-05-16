@@ -96,8 +96,6 @@ public interface NBTCompound extends NBT {
 
     boolean saveToPath(@NotNull Path path, boolean compressed);
 
-    // DEFAULT METHODS
-
     @Override
     default @NotNull NBTType getType() {
         return NBTType.COMPOUND;
