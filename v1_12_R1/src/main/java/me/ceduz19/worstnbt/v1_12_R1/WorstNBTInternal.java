@@ -16,6 +16,17 @@ import java.io.InputStream;
 
 class WorstNBTInternal implements NBTInternal {
 
+    private static WorstNBTInternal INSTANCE;
+
+    static WorstNBTInternal get() {
+        if (INSTANCE == null) throw new IllegalStateException(WorstNBTInternal.class.getCanonicalName() + " not initialized");
+        return INSTANCE;
+    }
+
+    {
+        INSTANCE = this;
+    }
+
     @Override
     public @NotNull NBT toWorst(@NotNull Object nms) {
         if (!(nms instanceof NBTBase))

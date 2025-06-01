@@ -59,7 +59,7 @@ class WorstNBTCompound implements NBTCompound {
         if (nbt == null) this.handle.remove(key);
         else this.handle.set(key, (NBTBase) nbt.getHandle());
 
-        return old == null ? null : WorstNBT.getInternal().toWorst(old);
+        return old == null ? null : WorstNBTInternal.get().toWorst(old);
     }
 
     @Override
@@ -139,7 +139,7 @@ class WorstNBTCompound implements NBTCompound {
     @Override
     public @Nullable NBT get(@NotNull String key) {
         NBTBase nbt = this.handle.get(key);
-        return nbt == null ? null : WorstNBT.getInternal().toWorst(nbt);
+        return nbt == null ? null : WorstNBTInternal.get().toWorst(nbt);
     }
 
     @Override

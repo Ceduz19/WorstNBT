@@ -30,7 +30,7 @@ class WorstNBTList extends AbstractList<NBT> implements NBTList {
 
     @Override
     public NBT get(int index) {
-        return WorstNBT.getInternal().toWorst(this.handle.i(index));
+        return WorstNBTInternal.get().toWorst(this.handle.i(index));
     }
 
     @Override
@@ -59,7 +59,7 @@ class WorstNBTList extends AbstractList<NBT> implements NBTList {
 
     @Override
     public NBT remove(int index) {
-        return WorstNBT.getInternal().toWorst(this.handle.remove(index));
+        return WorstNBTInternal.get().toWorst(this.handle.remove(index));
     }
 
     @Override

@@ -17,4 +17,5 @@ include 'v1_8_R3'
 include 'v1_21_R3'
 include 'v1_12_R1'
 include 'deploy'
+include 'v1_21_R2'
 

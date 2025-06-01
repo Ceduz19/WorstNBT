@@ -1,4 +1,4 @@
-package me.ceduz19.worstnbt.v1_21_R3;
+package me.ceduz19.worstnbt.v1_21_R2;
 
 import me.ceduz19.worstnbt.core.*;
 import me.ceduz19.worstnbt.core.internal.NBTInternal;
@@ -135,7 +135,7 @@ class WorstNBTInternal implements NBTInternal {
         String id = nms.getEncodeId();
         if (id != null) tag.putString("id", id);
 
-        nms.saveWithoutId(tag, true, false, false);
+        nms.saveWithoutId(tag, true);
         return new WorstNBTCompound(tag);
     }
 

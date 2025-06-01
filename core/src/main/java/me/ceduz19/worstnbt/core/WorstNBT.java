@@ -2,12 +2,12 @@ package me.ceduz19.worstnbt.core;
 
 import me.ceduz19.worstnbt.core.internal.NBTInternal;
 import me.ceduz19.worstnbt.core.util.NMSVer;
+import me.ceduz19.worstnbt.core.util.Compatibility;
 import me.ceduz19.worstnbt.core.util.ReflectionUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -16,20 +16,10 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 
 public final class WorstNBT {
-    private static final boolean SUPPORTED = NMSVer.SERVER != NMSVer.UNKNOWN;
-    private static final String PACKAGE_NAME = "me.ceduz19.worstnbt." + NMSVer.SERVER.toString();
-    private static final NBTInternal INTERNAL;
 
-    @ApiStatus.Internal
-    @NotNull
-    public static NBTInternal getInternal() {
-        checkCaller();
-        checkVersion();
-        if (INTERNAL == null) {
-            throw new IllegalStateException("Unable to initialize internal API, if you think this is a bug please report it on LINKGITHUB");
-        }
-        return INTERNAL;
-    }
+    private static final boolean SUPPORTED = Compatibility.of(NMSVer.V1_8_R3, NMSVer.V1_12_R1, NMSVer.V1_21_R3).isSupported();
+    private static final String PACKAGE_NAME = "me.ceduz19.worstnbt." + NMSVer.SERVER;
+    private static final NBTInternal INTERNAL;
 
     @NotNull
     public static NBTByteArray byteArray(byte[] a) {
@@ -153,13 +143,6 @@ public final class WorstNBT {
     private static void checkVersion() {
         if (!SUPPORTED)
             throw new IllegalStateException("WorstNBT does not support this minecraft version (Minecraft version: " + NMSVer.MC_SERVER_VER + ")");
-    }
-
-    private static void checkCaller() {
-        StackTraceElement caller;
-        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        if (stackTrace.length >= 4 && !(caller = stackTrace[3]).getClassName().startsWith(PACKAGE_NAME))
-            throw new IllegalStateException("Cannot access internal API outside of its scopes (caller: " + caller.getClassName() + "#" + caller.getMethodName() + ")");
     }
 
     static {
