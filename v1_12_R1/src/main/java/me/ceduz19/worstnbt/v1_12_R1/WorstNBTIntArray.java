@@ -1,9 +1,9 @@
 package me.ceduz19.worstnbt.v1_12_R1;
 
-import me.ceduz19.worstnbt.core.NBT;
-import me.ceduz19.worstnbt.core.NBTIntArray;
-import me.ceduz19.worstnbt.core.NBTNumeric;
-import me.ceduz19.worstnbt.core.util.ReflectionUtils;
+import me.ceduz19.worstnbt.NBT;
+import me.ceduz19.worstnbt.NBTIntArray;
+import me.ceduz19.worstnbt.NBTNumeric;
+import me.ceduz19.worstnbt.util.ReflectionUtils;
 import net.minecraft.server.v1_12_R1.NBTTagIntArray;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;

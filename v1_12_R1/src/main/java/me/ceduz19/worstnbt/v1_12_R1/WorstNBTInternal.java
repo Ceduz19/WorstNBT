@@ -1,7 +1,7 @@
 package me.ceduz19.worstnbt.v1_12_R1;
 
-import me.ceduz19.worstnbt.core.*;
-import me.ceduz19.worstnbt.core.internal.NBTInternal;
+import me.ceduz19.worstnbt.*;
+import me.ceduz19.worstnbt.internal.NBTInternal;
 import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
@@ -142,8 +142,7 @@ class WorstNBTInternal implements NBTInternal {
         PersistentScoreboard data = new PersistentScoreboard();
 
         data.a(nms);
-        data.b(nbt);
-        return new WorstNBTCompound(nbt);
+        return new WorstNBTCompound(data.b(nbt));
     }
 
     @Override

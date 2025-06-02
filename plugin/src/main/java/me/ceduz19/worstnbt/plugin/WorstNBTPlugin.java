@@ -1,6 +1,6 @@
 package me.ceduz19.worstnbt.plugin;
 
-import me.ceduz19.worstnbt.core.NBTCompound;
+import me.ceduz19.worstnbt.NBTCompound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

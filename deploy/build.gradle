@@ -5,7 +5,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '8.1.1' apply false
 }
 
-final List<String> commonProjects = List.of("core", "v1_8_R3", "v1_12_R1", "v1_21_R2", "v1_21_R3")
+final List<String> commonProjects = List.of("core", "v1_8_R3", "v1_10_R1", "v1_11_R1", "v1_12_R1", "v1_21_R2", "v1_21_R3")
 final String name = rootProject.name
 final String version = rootProject.version
 def libTask = tasks.register("libShadowJar", ShadowJar) {

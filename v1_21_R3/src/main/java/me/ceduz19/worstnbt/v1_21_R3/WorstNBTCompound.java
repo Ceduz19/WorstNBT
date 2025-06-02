@@ -1,6 +1,9 @@
 package me.ceduz19.worstnbt.v1_21_R3;
 
-import me.ceduz19.worstnbt.core.*;
+import me.ceduz19.worstnbt.NBT;
+import me.ceduz19.worstnbt.NBTCompound;
+import me.ceduz19.worstnbt.NBTList;
+import me.ceduz19.worstnbt.NBTType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.Tag;

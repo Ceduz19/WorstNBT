@@ -1,6 +1,6 @@
 package me.ceduz19.worstnbt.v1_8_R3;
 
-import me.ceduz19.worstnbt.core.NBTString;
+import me.ceduz19.worstnbt.NBTString;
 import net.minecraft.server.v1_8_R3.NBTTagString;
 import org.jetbrains.annotations.NotNull;
 

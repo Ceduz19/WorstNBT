@@ -1,8 +1,8 @@
 package me.ceduz19.worstnbt.v1_8_R3;
 
-import me.ceduz19.worstnbt.core.NBTEnd;
-import me.ceduz19.worstnbt.core.NBTType;
-import me.ceduz19.worstnbt.core.util.ReflectionUtils;
+import me.ceduz19.worstnbt.NBTEnd;
+import me.ceduz19.worstnbt.NBTType;
+import me.ceduz19.worstnbt.util.ReflectionUtils;
 import net.minecraft.server.v1_8_R3.NBTBase;
 import net.minecraft.server.v1_8_R3.NBTTagEnd;
 import org.jetbrains.annotations.NotNull;

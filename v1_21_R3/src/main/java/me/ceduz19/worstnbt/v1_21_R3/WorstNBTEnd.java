@@ -1,6 +1,6 @@
 package me.ceduz19.worstnbt.v1_21_R3;
 
-import me.ceduz19.worstnbt.core.NBTEnd;
+import me.ceduz19.worstnbt.NBTEnd;
 import net.minecraft.nbt.EndTag;
 import org.jetbrains.annotations.NotNull;
 

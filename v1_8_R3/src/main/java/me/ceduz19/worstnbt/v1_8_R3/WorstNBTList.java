@@ -1,7 +1,10 @@
 package me.ceduz19.worstnbt.v1_8_R3;
 
-import me.ceduz19.worstnbt.core.*;
-import me.ceduz19.worstnbt.core.util.ReflectionUtils;
+import me.ceduz19.worstnbt.NBT;
+import me.ceduz19.worstnbt.NBTCompound;
+import me.ceduz19.worstnbt.NBTList;
+import me.ceduz19.worstnbt.NBTType;
+import me.ceduz19.worstnbt.util.ReflectionUtils;
 import net.minecraft.server.v1_8_R3.NBTBase;
 import net.minecraft.server.v1_8_R3.NBTTagInt;
 import net.minecraft.server.v1_8_R3.NBTTagList;

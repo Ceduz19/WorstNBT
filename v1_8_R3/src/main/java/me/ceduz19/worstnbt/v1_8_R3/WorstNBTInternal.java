@@ -1,7 +1,7 @@
 package me.ceduz19.worstnbt.v1_8_R3;
 
-import me.ceduz19.worstnbt.core.*;
-import me.ceduz19.worstnbt.core.internal.NBTInternal;
+import me.ceduz19.worstnbt.*;
+import me.ceduz19.worstnbt.internal.NBTInternal;
 import net.minecraft.server.v1_8_R3.*;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;

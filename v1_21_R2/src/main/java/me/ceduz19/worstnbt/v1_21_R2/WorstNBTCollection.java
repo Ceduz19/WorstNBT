@@ -1,6 +1,6 @@
 package me.ceduz19.worstnbt.v1_21_R2;
 
-import me.ceduz19.worstnbt.core.*;
+import me.ceduz19.worstnbt.*;
 import net.minecraft.nbt.*;
 import org.jetbrains.annotations.NotNull;
 

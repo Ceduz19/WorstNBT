@@ -1,6 +1,6 @@
 package me.ceduz19.worstnbt.v1_8_R3;
 
-import me.ceduz19.worstnbt.core.NBTNumeric;
+import me.ceduz19.worstnbt.NBTNumeric;
 import net.minecraft.server.v1_8_R3.*;
 import org.jetbrains.annotations.NotNull;
 

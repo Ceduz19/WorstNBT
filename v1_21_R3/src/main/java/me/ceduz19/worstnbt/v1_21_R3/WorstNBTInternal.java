@@ -1,7 +1,7 @@
 package me.ceduz19.worstnbt.v1_21_R3;
 
-import me.ceduz19.worstnbt.core.*;
-import me.ceduz19.worstnbt.core.internal.NBTInternal;
+import me.ceduz19.worstnbt.*;
+import me.ceduz19.worstnbt.internal.NBTInternal;
 import net.minecraft.nbt.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerScoreboard;
