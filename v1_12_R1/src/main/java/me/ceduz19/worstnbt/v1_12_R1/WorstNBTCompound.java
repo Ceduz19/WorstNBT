@@ -167,10 +167,7 @@ class WorstNBTCompound implements NBTCompound {
 
     @Override
     public @NotNull UUID getUUID(@NotNull String key) {
-        if (!this.handle.hasKeyOfType(key + "Most", NBTType.ANY_NUMERIC.asId()) || !this.handle.hasKeyOfType(key + "Least", NBTType.ANY_NUMERIC.asId()))
-            throw new IllegalStateException(key + "Most and " + key + "Least keys must be of any numeric type in order to get an UUID");
-
-        return new UUID(this.handle.getLong(key + "Most"), this.handle.getLong(key + "Least"));
+        return Objects.requireNonNull(this.handle.a(key));
     }
 
     @Override

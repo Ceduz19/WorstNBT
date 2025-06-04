@@ -8,7 +8,6 @@ import net.minecraft.server.v1_12_R1.NBTTagByteArray;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.AbstractList;
 import java.util.Arrays;
@@ -43,9 +42,9 @@ class WorstNBTByteArray extends AbstractList<NBTNumeric.Byte> implements NBTByte
 
     @Override
     public @NotNull NBTNumeric.Byte set(int index, @NotNull NBTNumeric.Byte value) {
-        byte old = this.handle.c()[index];
+        NBTNumeric.Byte old = get(index);
         this.setNBT(index, value);
-        return new WorstNBTNumeric.Byte(old);
+        return old;
     }
 
     @Override
@@ -55,17 +54,17 @@ class WorstNBTByteArray extends AbstractList<NBTNumeric.Byte> implements NBTByte
 
     @Override
     public @NotNull NBTNumeric.Byte remove(int index) {
-        byte old = this.handle.c()[index];
+        NBTNumeric.Byte old = get(index);
         if (FIELD_DATA != null)
-            ReflectionUtils.writeField(FIELD_DATA, this.handle, ArrayUtils.remove(this.handle.c(), index));
-        return new WorstNBTNumeric.Byte(old);
+            ReflectionUtils.writeField(FIELD_DATA, this.handle, ArrayUtils.remove(getAsByteArray(), index));
+        return old;
     }
 
     @Override
     public boolean setNBT(int index, @NotNull NBT value) {
         if (!(value instanceof NBTNumeric)) return false;
 
-        Array.set(this.handle.c(), index, ((NBTNumeric)value).getAsByte());
+        getAsByteArray()[index] = ((NBTNumeric)value).getAsByte();
         return true;
     }
 
@@ -73,7 +72,7 @@ class WorstNBTByteArray extends AbstractList<NBTNumeric.Byte> implements NBTByte
     public boolean addNBT(int index, @NotNull NBT value) {
         if (!(value instanceof NBTNumeric) || FIELD_DATA == null) return false;
 
-        ReflectionUtils.writeField(FIELD_DATA, this.handle, ArrayUtils.add(this.handle.c(), index, ((NBTNumeric)value).getAsByte()));
+        ReflectionUtils.writeField(FIELD_DATA, this.handle, ArrayUtils.add(getAsByteArray(), index, ((NBTNumeric)value).getAsByte()));
         return false;
     }
 
@@ -96,7 +95,7 @@ class WorstNBTByteArray extends AbstractList<NBTNumeric.Byte> implements NBTByte
         if (!obj.getClass().isArray()) return false;
 
         Class<?> type = obj.getClass().getComponentType();
-        if (type == byte.class) return Arrays.equals(this.handle.c(), (byte[])obj);
+        if (type == byte.class) return Arrays.equals(getAsByteArray(), (byte[])obj);
 
         if (type != Byte.class) return false;
 
@@ -104,7 +103,7 @@ class WorstNBTByteArray extends AbstractList<NBTNumeric.Byte> implements NBTByte
         byte[] primitive = new byte[wrapped.length];
         for (int i = 0; i < primitive.length; ++i) primitive[i] = wrapped[i];
 
-        return Arrays.equals(this.handle.c(), primitive);
+        return Arrays.equals(getAsByteArray(), primitive);
     }
 
     @Override

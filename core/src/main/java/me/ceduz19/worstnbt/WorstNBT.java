@@ -18,8 +18,13 @@ import java.lang.reflect.Constructor;
 public final class WorstNBT {
 
     private static final Compatibility COMPATIBILITY = Compatibility.of(
-            NMSVer.V1_8_R3, NMSVer.V1_9_R1, NMSVer.V1_9_R2, NMSVer.V1_10_R1, NMSVer.V1_11_R1, NMSVer.V1_12_R1,
-            NMSVer.V1_21_R2, NMSVer.V1_21_R3
+            NMSVer.V1_8_R3,
+            NMSVer.V1_9_R1, NMSVer.V1_9_R2,
+            NMSVer.V1_10_R1,
+            NMSVer.V1_11_R1,
+            NMSVer.V1_12_R1,
+            NMSVer.V1_13_R1,
+            NMSVer.V1_21_R1, NMSVer.V1_21_R2, NMSVer.V1_21_R3
     );
     private static final boolean SUPPORTED = COMPATIBILITY.isSupported();
     private static final String PACKAGE_NAME = "me.ceduz19.worstnbt." + NMSVer.SERVER;
@@ -146,8 +151,8 @@ public final class WorstNBT {
 
     private static void checkCompatibility() {
         if (!SUPPORTED)
-            throw new IllegalStateException("WorstNBT does not support this minecraft version (Minecraft version: " + NMSVer.MC_SERVER_VER + ")" +
-                    ", please use one of the following instead: " + COMPATIBILITY.getSupportedMCVersions());
+            throw new IllegalStateException("WorstNBT does not support this minecraft version (MC version: " + NMSVer.MC_SERVER_VER +
+                    ", NMS version: " + NMSVer.SERVER + "), please use one of the following instead: " + COMPATIBILITY.getSupportedMCVersions());
     }
 
     static {

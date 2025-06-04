@@ -41,7 +41,7 @@ class WorstNBTEnd implements NBTEnd {
     }
 
     static {
-        Method m = ReflectionUtils.getMethod(NBTBase.class, "createTag", true, Byte.TYPE);
+        Method m = ReflectionUtils.getMethod(NBTBase.class, "createTag", true, byte.class);
         HANDLE = m == null ? null : (NBTTagEnd) ReflectionUtils.invokeMethod(m, null, 0);
     }
 }

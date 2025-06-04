@@ -75,7 +75,7 @@ abstract class WorstNBTNumeric<T extends NBTBase> implements NBTNumeric {
 
         @Override
         public @NotNull Number getAsNumber() {
-            return handle.asDouble();
+            return getAsDouble();
         }
     }
 
@@ -120,7 +120,7 @@ abstract class WorstNBTNumeric<T extends NBTBase> implements NBTNumeric {
 
         @Override
         public @NotNull Number getAsNumber() {
-            return handle.i();
+            return getAsFloat();
         }
     }
 
@@ -165,7 +165,7 @@ abstract class WorstNBTNumeric<T extends NBTBase> implements NBTNumeric {
 
         @Override
         public @NotNull Number getAsNumber() {
-            return handle.d();
+            return getAsLong();
         }
     }
 
@@ -210,7 +210,7 @@ abstract class WorstNBTNumeric<T extends NBTBase> implements NBTNumeric {
 
         @Override
         public @NotNull Number getAsNumber() {
-            return handle.e();
+            return getAsInt();
         }
     }
 
@@ -255,7 +255,7 @@ abstract class WorstNBTNumeric<T extends NBTBase> implements NBTNumeric {
 
         @Override
         public @NotNull Number getAsNumber() {
-            return handle.f();
+            return getAsShort();
         }
     }
 
@@ -300,7 +300,7 @@ abstract class WorstNBTNumeric<T extends NBTBase> implements NBTNumeric {
 
         @Override
         public @NotNull Number getAsNumber() {
-            return handle.g();
+            return getAsByte();
         }
     }
 }

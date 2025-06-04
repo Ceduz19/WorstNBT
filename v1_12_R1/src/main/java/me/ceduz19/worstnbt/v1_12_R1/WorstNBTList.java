@@ -1,9 +1,6 @@
 package me.ceduz19.worstnbt.v1_12_R1;
 
-import me.ceduz19.worstnbt.NBT;
-import me.ceduz19.worstnbt.NBTCompound;
-import me.ceduz19.worstnbt.NBTList;
-import me.ceduz19.worstnbt.NBTType;
+import me.ceduz19.worstnbt.*;
 import me.ceduz19.worstnbt.util.ReflectionUtils;
 import net.minecraft.server.v1_12_R1.*;
 import org.jetbrains.annotations.NotNull;
@@ -78,8 +75,8 @@ class WorstNBTList extends AbstractList<NBT> implements NBTList {
 
     @Override
     public short getShort(int index) {
-        NBTBase nbt = this.handle.i(index);
-        return nbt instanceof NBTTagShort ? ((NBTTagShort) nbt).f() : 0;
+        NBT nbt = get(index);
+        return nbt instanceof NBTNumeric.Short ? ((NBTNumeric.Short) nbt).getAsShort() : 0;
     }
 
     @Override
@@ -94,8 +91,8 @@ class WorstNBTList extends AbstractList<NBT> implements NBTList {
 
     @Override
     public long[] getLongArray(int index) {
-        NBTBase nbt = this.handle.i(index);
-        return nbt instanceof NBTTagLongArray ? new WorstNBTLongArray((NBTTagLongArray) nbt).getAsLongArray() : new long[0];
+        NBT nbt = get(index);
+        return nbt instanceof NBTLongArray ? ((NBTLongArray) nbt).getAsLongArray() : new long[0];
     }
 
     @Override
