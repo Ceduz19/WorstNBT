@@ -17,44 +17,47 @@ import java.lang.reflect.Constructor;
 
 public final class WorstNBT {
 
-    private static final Compatibility COMPATIBILITY = Compatibility.of(NMSVer.V1_8_R3, NMSVer.V1_10_R1, NMSVer.V1_11_R1, NMSVer.V1_12_R1, NMSVer.V1_21_R3);
+    private static final Compatibility COMPATIBILITY = Compatibility.of(
+            NMSVer.V1_8_R3, NMSVer.V1_9_R1, NMSVer.V1_9_R2, NMSVer.V1_10_R1, NMSVer.V1_11_R1, NMSVer.V1_12_R1,
+            NMSVer.V1_21_R2, NMSVer.V1_21_R3
+    );
     private static final boolean SUPPORTED = COMPATIBILITY.isSupported();
     private static final String PACKAGE_NAME = "me.ceduz19.worstnbt." + NMSVer.SERVER;
     private static final NBTInternal INTERNAL;
 
     @NotNull
     public static NBTByteArray byteArray(byte[] a) {
-        checkVersion();
+        checkCompatibility();
         return INTERNAL.byteArray(a);
     }
 
     @NotNull
     public static NBTCompound compound() {
-        checkVersion();
+        checkCompatibility();
         return INTERNAL.compound();
     }
 
     @NotNull
     public static NBTEnd end() {
-        checkVersion();
+        checkCompatibility();
         return INTERNAL.end();
     }
 
     @NotNull
     public static NBTIntArray intArray(int[] a) {
-        checkVersion();
+        checkCompatibility();
         return INTERNAL.intArray(a);
     }
 
     @NotNull
     public static NBTList list() {
-        checkVersion();
+        checkCompatibility();
         return INTERNAL.list();
     }
 
     @NotNull
     public static NBTLongArray longArray(long[] a) {
-        checkVersion();
+        checkCompatibility();
         if (NMSVer.SERVER.isBefore(NMSVer.V1_12_R1))
             throw new UnsupportedOperationException("Long array NBT is not implemented in this minecraft version (" +
                     NMSVer.MC_SERVER_VER + "), must be at least 1.12");
@@ -64,84 +67,84 @@ public final class WorstNBT {
 
     @NotNull
     public static NBTNumeric.Byte byteNum(byte b) {
-        checkVersion();
+        checkCompatibility();
         return INTERNAL.byteNum(b);
     }
 
     @NotNull
     public static NBTNumeric.Short shortNum(short s) {
-        checkVersion();
+        checkCompatibility();
         return INTERNAL.shortNum(s);
     }
 
     @NotNull
     public static NBTNumeric.Int intNum(int i) {
-        checkVersion();
+        checkCompatibility();
         return INTERNAL.intNum(i);
     }
 
     @NotNull
     public static NBTNumeric.Long longNum(long l) {
-        checkVersion();
+        checkCompatibility();
         return INTERNAL.longNum(l);
     }
 
     @NotNull
     public static NBTNumeric.Float floatNum(float f) {
-        checkVersion();
+        checkCompatibility();
         return INTERNAL.floatNum(f);
     }
 
     @NotNull
     public static NBTNumeric.Double doubleNum(double d) {
-        checkVersion();
+        checkCompatibility();
         return INTERNAL.doubleNum(d);
     }
 
     @NotNull
     public static NBTString string(String s) {
-        checkVersion();
+        checkCompatibility();
         if (s == null) throw new NullPointerException("string");
         return INTERNAL.string(s);
     }
 
     @NotNull
     public static NBTCompound fromItemStack(ItemStack itemStack) {
-        checkVersion();
+        checkCompatibility();
         if (itemStack == null) throw new NullPointerException("itemStack");
         if (itemStack.getType() == Material.AIR || itemStack.getAmount() <= 0)
-            throw new IllegalArgumentException("itemStack is air or amount is less or equal to 0");
+            throw new IllegalArgumentException("itemStack is air or amount is <= 0");
         return INTERNAL.fromItemStack(itemStack);
     }
 
     @NotNull
     public static NBTCompound fromEntity(Entity entity) {
-        checkVersion();
+        checkCompatibility();
         if (entity == null) throw new NullPointerException("entity");
         return INTERNAL.fromEntity(entity);
     }
 
     public static NBTCompound fromScoreboard(Scoreboard scoreboard) {
-        checkVersion();
+        checkCompatibility();
         if (scoreboard == null) throw new NullPointerException("scoreboard");
         return INTERNAL.fromScoreboard(scoreboard);
     }
 
     @NotNull
     public static NBTCompound fromFile(File file) throws IOException {
-        checkVersion();
+        checkCompatibility();
         if (file == null) throw new NullPointerException("file");
         return INTERNAL.fromFile(file);
     }
 
     @NotNull
     public static NBTCompound fromInputStream(InputStream inputStream) throws IOException {
-        checkVersion();
+        checkCompatibility();
         if (inputStream == null) throw new NullPointerException("inputStream");
         return INTERNAL.fromInputStream(inputStream);
     }
 
-    private static void checkVersion() {
+    private static void checkCompatibility() {
         if (!SUPPORTED)
             throw new IllegalStateException("WorstNBT does not support this minecraft version (Minecraft version: " + NMSVer.MC_SERVER_VER + ")" +
                     ", please use one of the following instead: " + COMPATIBILITY.getSupportedMCVersions());
