@@ -2,10 +2,6 @@ plugins {
     id 'java'
 }
 
-group = 'me.ceduz19.worstnbt'
-version = '1.0-SNAPSHOT'
-
-
 dependencies {
     compileOnly libs.annotations
     compileOnly libs.paper

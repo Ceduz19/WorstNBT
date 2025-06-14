@@ -1,0 +1,25 @@
+import io.papermc.paperweight.userdev.ReobfArtifactConfiguration
+
+plugins {
+    id 'java'
+    alias(libs.plugins.paper.dev)
+}
+
+repositories {
+    maven {
+        url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
+    }
+}
+
+dependencies {
+    compileOnly libs.annotations
+    compileOnly project(':core')
+    compileOnly("org.spigotmc:spigot-api:1.20.6-R0.1-SNAPSHOT") // cannot resolve io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT for no reason
+    paperweight.paperDevBundle("1.20.6-R0.1-SNAPSHOT")
+}
+
+java.toolchain.setLanguageVersion(JavaLanguageVersion.of(17))
+
+paperweight.reobfArtifactConfiguration = ReobfArtifactConfiguration.getREOBF_PRODUCTION()
+
+

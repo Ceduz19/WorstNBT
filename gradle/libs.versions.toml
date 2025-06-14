@@ -1,7 +1,11 @@
 [versions]
 annotations = "24.0.1"
 paper = "1.16.5-R0.1-SNAPSHOT"
+paper-dev = "2.0.0-beta.16"
 
 [libraries]
 annotations = { module = "org.jetbrains:annotations", version.ref = "annotations" }
 paper = { module = "com.destroystokyo.paper:paper-api", version.ref = "paper" }
+
+[plugins]
+paper-dev = { id = "io.papermc.paperweight.userdev", version.ref = "paper-dev"}
