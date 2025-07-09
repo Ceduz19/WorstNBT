@@ -10,7 +10,7 @@ import java.lang.reflect.Method;
 public final class ReflectionUtils {
 
     private ReflectionUtils() {
-        throw new IllegalStateException();
+        throw new IllegalStateException("cannot instantiate utility class");
     }
 
     public static @Nullable Class<?> getClass(@NotNull String name) {

@@ -14,8 +14,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.util.Objects;
 
 public final class WorstNBT {
+
+    private WorstNBT() {
+        throw new IllegalStateException("cannot instantiate utility class");
+    }
 
     private static final Compatibility COMPATIBILITY = Compatibility.of(
             NMSVer.V1_8_R3,
@@ -24,6 +29,7 @@ public final class WorstNBT {
             NMSVer.V1_11_R1,
             NMSVer.V1_12_R1,
             NMSVer.V1_13_R1,
+            NMSVer.V1_20_R1, NMSVer.V1_20_R2, NMSVer.V1_20_R3, NMSVer.V1_20_R4,
             NMSVer.V1_21_R1, NMSVer.V1_21_R2, NMSVer.V1_21_R3
     );
     private static final boolean SUPPORTED = COMPATIBILITY.isSupported();
@@ -107,45 +113,45 @@ public final class WorstNBT {
     }
 
     @NotNull
-    public static NBTString string(String s) {
+    public static NBTString string(@NotNull String string) {
         checkCompatibility();
-        if (s == null) throw new NullPointerException("string");
-        return INTERNAL.string(s);
+        Objects.requireNonNull(string, "string");
+        return INTERNAL.string(string);
     }
 
     @NotNull
-    public static NBTCompound fromItemStack(ItemStack itemStack) {
+    public static NBTCompound fromItemStack(@NotNull ItemStack itemStack) {
         checkCompatibility();
-        if (itemStack == null) throw new NullPointerException("itemStack");
+        Objects.requireNonNull(itemStack, "itemStack");
         if (itemStack.getType() == Material.AIR || itemStack.getAmount() <= 0)
             throw new IllegalArgumentException("itemStack is air or amount is <= 0");
         return INTERNAL.fromItemStack(itemStack);
     }
 
     @NotNull
-    public static NBTCompound fromEntity(Entity entity) {
+    public static NBTCompound fromEntity(@NotNull Entity entity) {
         checkCompatibility();
-        if (entity == null) throw new NullPointerException("entity");
+        Objects.requireNonNull(entity, "entity");
         return INTERNAL.fromEntity(entity);
     }
 
-    public static NBTCompound fromScoreboard(Scoreboard scoreboard) {
+    public static NBTCompound fromScoreboard(@NotNull Scoreboard scoreboard) {
         checkCompatibility();
-        if (scoreboard == null) throw new NullPointerException("scoreboard");
+        Objects.requireNonNull(scoreboard, "scoreboard");
         return INTERNAL.fromScoreboard(scoreboard);
     }
 
     @NotNull
-    public static NBTCompound fromFile(File file) throws IOException {
+    public static NBTCompound fromFile(@NotNull File file) throws IOException {
         checkCompatibility();
-        if (file == null) throw new NullPointerException("file");
+        Objects.requireNonNull(file, "file");
         return INTERNAL.fromFile(file);
     }
 
     @NotNull
-    public static NBTCompound fromInputStream(InputStream inputStream) throws IOException {
+    public static NBTCompound fromInputStream(@NotNull InputStream inputStream) throws IOException {
         checkCompatibility();
-        if (inputStream == null) throw new NullPointerException("inputStream");
+        Objects.requireNonNull(inputStream, "inputStream");
         return INTERNAL.fromInputStream(inputStream);
     }
 

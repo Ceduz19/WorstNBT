@@ -102,18 +102,24 @@ public interface NBTCompound extends NBT {
     }
 
     default @Nullable UUID getUUIDOrNull(@NotNull String key) {
+        Objects.requireNonNull(key, "key");
         return this.hasUUID(key) ? this.getUUID(key) : null;
     }
 
     default @Nullable String getStringOrNull(@NotNull String key) {
+        Objects.requireNonNull(key, "key");
         return this.contains(key, NBTType.STRING) ? this.getString(key) : null;
     }
 
     default @Nullable NBTCompound getCompoundOrNull(@NotNull String key) {
+        Objects.requireNonNull(key, "key");
         return this.contains(key, NBTType.COMPOUND) ? this.getCompound(key) : null;
     }
 
     default @Nullable NBTList getListOrNull(@NotNull String key, @NotNull NBTType elementType) {
+        Objects.requireNonNull(key, "key");
+        Objects.requireNonNull(elementType, "elementType");
+
         if (!this.contains(key, NBTType.LIST)) return null;
 
         NBTList list = (NBTList) this.get(key);
@@ -121,6 +127,8 @@ public interface NBTCompound extends NBT {
     }
 
     default @NotNull NBTCompound getOrCreateCompound(@NotNull String key) {
+        Objects.requireNonNull(key, "key");
+
         if (contains(key, NBTType.COMPOUND)) return getCompound(key);
 
         NBTCompound compound = create();
@@ -129,6 +137,9 @@ public interface NBTCompound extends NBT {
     }
 
     default @NotNull NBTList getOrCreateList(@NotNull String key, @NotNull NBTType elementType) {
+        Objects.requireNonNull(key, "key");
+        Objects.requireNonNull(elementType, "elementType");
+
         NBTList list;
 
         if (contains(key, NBTType.LIST)) {
