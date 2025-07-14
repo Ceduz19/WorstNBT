@@ -47,7 +47,7 @@ class WorstNBTCompound implements NBTCompound {
 
     @Override
     public boolean contains(@NotNull String key, @NotNull NBTType type) {
-        return this.handle.hasKeyOfType(key, type.asId());
+        return this.handle.hasKeyOfType(key, type.getId());
     }
 
     @Override
@@ -92,7 +92,7 @@ class WorstNBTCompound implements NBTCompound {
             return;
         }
 
-        if (this.handle.hasKeyOfType(key + "Most", NBTType.ANY_NUMERIC.asId()) && this.handle.hasKeyOfType(key + "Least", NBTType.ANY_NUMERIC.asId())) {
+        if (this.handle.hasKeyOfType(key + "Most", NBTType.ANY_NUMERIC.getId()) && this.handle.hasKeyOfType(key + "Least", NBTType.ANY_NUMERIC.getId())) {
             this.handle.remove(key + "Most");
             this.handle.remove(key + "Least");
         }
@@ -167,7 +167,7 @@ class WorstNBTCompound implements NBTCompound {
 
     @Override
     public @NotNull UUID getUUID(@NotNull String key) {
-        if (!this.handle.hasKeyOfType(key + "Most", NBTType.ANY_NUMERIC.asId()) || !this.handle.hasKeyOfType(key + "Least", NBTType.ANY_NUMERIC.asId()))
+        if (!this.handle.hasKeyOfType(key + "Most", NBTType.ANY_NUMERIC.getId()) || !this.handle.hasKeyOfType(key + "Least", NBTType.ANY_NUMERIC.getId()))
             throw new IllegalStateException(key + "Most and " + key + "Least keys must be of any numeric type in order to get an UUID");
 
         return new UUID(this.handle.getLong(key + "Most"), this.handle.getLong(key + "Least"));
@@ -215,7 +215,7 @@ class WorstNBTCompound implements NBTCompound {
 
     @Override
     public @NotNull NBTList getList(@NotNull String key, @NotNull NBTType elementType) {
-        return new WorstNBTList(this.handle.getList(key, elementType.asId()));
+        return new WorstNBTList(this.handle.getList(key, elementType.getId()));
     }
 
     @Override

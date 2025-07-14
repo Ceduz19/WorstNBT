@@ -22,23 +22,23 @@ public interface NBTCompound extends NBT {
         return WorstNBT.compound();
     }
 
-    static @NotNull NBTCompound fromItemStack(ItemStack itemStack) {
+    static @NotNull NBTCompound fromItemStack(@NotNull ItemStack itemStack) {
         return WorstNBT.fromItemStack(itemStack);
     }
 
-    static @NotNull NBTCompound fromEntity(Entity entity) {
+    static @NotNull NBTCompound fromEntity(@NotNull Entity entity) {
         return WorstNBT.fromEntity(entity);
     }
 
-    static @NotNull NBTCompound fromScoreboard(Scoreboard scoreboard) {
+    static @NotNull NBTCompound fromScoreboard(@NotNull Scoreboard scoreboard) {
         return WorstNBT.fromScoreboard(scoreboard);
     }
 
-    static @NotNull NBTCompound fromFile(File file) throws IOException {
+    static @NotNull NBTCompound fromFile(@NotNull File file) throws IOException {
         return WorstNBT.fromFile(file);
     }
 
-    static @NotNull NBTCompound fromInputStream(InputStream inputStream) throws IOException {
+    static @NotNull NBTCompound fromInputStream(@NotNull InputStream inputStream) throws IOException {
         return WorstNBT.fromInputStream(inputStream);
     }
 

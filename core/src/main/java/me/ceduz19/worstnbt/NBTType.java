@@ -24,7 +24,7 @@ public enum NBTType {
         this.id = (byte)id;
     }
 
-    public byte asId() {
+    public byte getId() {
         return this.id;
     }
 

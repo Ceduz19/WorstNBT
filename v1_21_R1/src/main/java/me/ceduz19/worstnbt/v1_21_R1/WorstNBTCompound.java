@@ -47,7 +47,7 @@ class WorstNBTCompound implements NBTCompound {
 
     @Override
     public boolean contains(@NotNull String key, @NotNull NBTType type) {
-        return this.handle.contains(key, type.asId());
+        return this.handle.contains(key, type.getId());
     }
 
     @Override
@@ -207,7 +207,7 @@ class WorstNBTCompound implements NBTCompound {
 
     @Override
     public @NotNull NBTList getList(@NotNull String key, @NotNull NBTType elementType) {
-        return new WorstNBTList(this.handle.getList(key, elementType.asId()));
+        return new WorstNBTList(this.handle.getList(key, elementType.getId()));
     }
 
     @Override

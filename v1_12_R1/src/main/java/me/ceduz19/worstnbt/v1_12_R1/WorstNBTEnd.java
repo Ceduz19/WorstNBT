@@ -29,7 +29,7 @@ class WorstNBTEnd implements NBTEnd {
     }
 
     public int hashCode() {
-        return NBTType.END.asId();
+        return NBTType.END.getId();
     }
 
     public boolean equals(Object obj) {
