@@ -29,11 +29,11 @@ public final class WorstNBT {
             NMSVer.V1_11_R1,
             NMSVer.V1_12_R1,
             NMSVer.V1_13_R1,
+            NMSVer.V1_19_R1, NMSVer.V1_19_R2, NMSVer.V1_19_R3,
             NMSVer.V1_20_R1, NMSVer.V1_20_R2, NMSVer.V1_20_R3, NMSVer.V1_20_R4,
             NMSVer.V1_21_R1, NMSVer.V1_21_R2, NMSVer.V1_21_R3
     );
     private static final boolean SUPPORTED = COMPATIBILITY.isSupported();
-    private static final String PACKAGE_NAME = "me.ceduz19.worstnbt." + NMSVer.SERVER;
     private static final NBTInternal INTERNAL;
 
     @NotNull
@@ -157,15 +157,21 @@ public final class WorstNBT {
 
     private static void checkCompatibility() {
         if (!SUPPORTED)
-            throw new IllegalStateException("WorstNBT does not support this minecraft version (MC version: " + NMSVer.MC_SERVER_VER +
-                    ", NMS version: " + NMSVer.SERVER + "), please use one of the following instead: " + COMPATIBILITY.getSupportedMCVersions());
+            throw new UnsupportedOperationException("WorstNBT does not support this minecraft version (MC version: " +
+                    NMSVer.MC_SERVER_VER + ", NMS version: " + NMSVer.SERVER + "), please use one of the following instead: "
+                    + COMPATIBILITY.getSupportedMCVersions());
+
+        if (INTERNAL == null)
+            throw new IllegalStateException("Unable to create an instance of the internal class (package: " +
+                    WorstNBT.class.getPackage().getName() + "." + NMSVer.SERVER + ".WorstNBTInternal), cannot find constructor?");
     }
 
     static {
         if (NMSVer.SERVER == NMSVer.UNKNOWN) {
             INTERNAL = null;
         } else {
-            Class<?> clazz = ReflectionUtils.getClass(PACKAGE_NAME + ".WorstNBTInternal");
+            String packageName = WorstNBT.class.getPackage().getName() + "." + NMSVer.SERVER;
+            Class<?> clazz = ReflectionUtils.getClass(packageName + ".WorstNBTInternal");
             Constructor<?> constructor = clazz == null ? null : ReflectionUtils.getConstructor(clazz, true);
             INTERNAL = constructor == null ? null : (NBTInternal) ReflectionUtils.invokeConstructor(constructor, new Object[0]);
         }

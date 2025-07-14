@@ -1,0 +1,285 @@
+package me.ceduz19.worstnbt.v1_19_R3;
+
+import me.ceduz19.worstnbt.NBT;
+import me.ceduz19.worstnbt.NBTCompound;
+import me.ceduz19.worstnbt.NBTList;
+import me.ceduz19.worstnbt.NBTType;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.ServerScoreboard;
+import net.minecraft.world.item.ItemStack;
+import org.bukkit.craftbukkit.v1_19_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_19_R3.scoreboard.CraftScoreboard;
+import org.bukkit.entity.Entity;
+import org.bukkit.scoreboard.Scoreboard;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+
+class WorstNBTCompound implements NBTCompound {
+
+    private final CompoundTag handle;
+
+    WorstNBTCompound() {
+        this(new CompoundTag());
+    }
+
+    public WorstNBTCompound(CompoundTag handle) {
+        this.handle = handle;
+    }
+
+    @Override
+    public @NotNull Set<String> getAllKeys() {
+        return this.handle.getAllKeys();
+    }
+
+    @Override
+    public boolean contains(@NotNull String key) {
+        return this.handle.contains(key);
+    }
+
+    @Override
+    public boolean contains(@NotNull String key, @NotNull NBTType type) {
+        return this.handle.contains(key, type.asId());
+    }
+
+    @Override
+    public boolean hasUUID(@NotNull String key) {
+        return this.handle.hasUUID(key);
+    }
+
+    @Override
+    public @Nullable NBT put(@NotNull String key, @Nullable NBT nbt) {
+        Tag old;
+        if (nbt == null) {
+            old = this.handle.get(key);
+            this.handle.remove(key);
+        } else {
+            old = this.handle.put(key, (Tag) nbt.getHandle());
+        }
+        return old == null ? null : WorstNBTInternal.get().toWorst(old);
+    }
+
+    @Override
+    public void putByte(@NotNull String key, byte b) {
+        this.handle.putByte(key, b);
+    }
+
+    @Override
+    public void putShort(@NotNull String key, short s) {
+        this.handle.putShort(key, s);
+    }
+
+    @Override
+    public void putInt(@NotNull String key, int i) {
+        this.handle.putInt(key, i);
+    }
+
+    @Override
+    public void putLong(@NotNull String key, long l) {
+        this.handle.putLong(key, l);
+    }
+
+    @Override
+    public void putUUID(@NotNull String key, @Nullable UUID uuid) {
+        if (uuid != null) this.handle.putUUID(key, uuid);
+        else if (this.hasUUID(key)) this.handle.remove(key);
+    }
+
+    @Override
+    public void putFloat(@NotNull String key, float f) {
+        this.handle.putFloat(key, f);
+    }
+
+    @Override
+    public void putDouble(@NotNull String key, double d) {
+        this.handle.putDouble(key, d);
+    }
+
+    @Override
+    public void putString(@NotNull String key, @Nullable String string) {
+        if (string != null) this.handle.putString(key, string);
+        else if (this.getType(key) == NBTType.STRING) this.handle.remove(key);
+    }
+
+    @Override
+    public void putByteArray(@NotNull String key, byte[] array) {
+        this.handle.putByteArray(key, array);
+    }
+
+    @Override
+    public void putIntArray(@NotNull String key, int[] array) {
+        this.handle.putIntArray(key, array);
+    }
+
+    @Override
+    public void putLongArray(@NotNull String key, long[] array) {
+        this.handle.putLongArray(key, array);
+    }
+
+    @Override
+    public void putBoolean(@NotNull String key, boolean bool) {
+        this.handle.putBoolean(key, bool);
+    }
+
+    @Override
+    public @NotNull NBTType getType(@NotNull String key) {
+        return Objects.requireNonNull(NBTType.byId(this.handle.getTagType(key)));
+    }
+
+    @Override
+    public @Nullable NBT get(@NotNull String key) {
+        Tag tag = this.handle.get(key);
+        return tag == null ? null : WorstNBTInternal.get().toWorst(tag);
+    }
+
+    @Override
+    public byte getByte(@NotNull String key) {
+        return this.handle.getByte(key);
+    }
+
+    @Override
+    public short getShort(@NotNull String key) {
+        return this.handle.getShort(key);
+    }
+
+    @Override
+    public int getInt(@NotNull String key) {
+        return this.handle.getInt(key);
+    }
+
+    @Override
+    public long getLong(@NotNull String key) {
+        return this.handle.getLong(key);
+    }
+
+    @Override
+    public @NotNull UUID getUUID(@NotNull String key) {
+        return this.handle.getUUID(key);
+    }
+
+    @Override
+    public float getFloat(@NotNull String key) {
+        return this.handle.getFloat(key);
+    }
+
+    @Override
+    public double getDouble(@NotNull String key) {
+        return this.handle.getDouble(key);
+    }
+
+    @Override
+    public @NotNull String getString(@NotNull String key) {
+        return this.handle.getString(key);
+    }
+
+    @Override
+    public byte[] getByteArray(@NotNull String key) {
+        return this.handle.getByteArray(key);
+    }
+
+    @Override
+    public int[] getIntArray(@NotNull String key) {
+        return this.handle.getIntArray(key);
+    }
+
+    @Override
+    public long[] getLongArray(@NotNull String key) {
+        return this.handle.getLongArray(key);
+    }
+
+    @Override
+    public boolean getBoolean(@NotNull String key) {
+        return this.handle.getBoolean(key);
+    }
+
+    @Override
+    public @NotNull NBTCompound getCompound(@NotNull String key) {
+        return new WorstNBTCompound(this.handle.getCompound(key));
+    }
+
+    @Override
+    public @NotNull NBTList getList(@NotNull String key, @NotNull NBTType elementType) {
+        return new WorstNBTList(this.handle.getList(key, elementType.asId()));
+    }
+
+    @Override
+    public @NotNull NBTCompound merge(@NotNull NBTCompound other) {
+        this.handle.merge(((WorstNBTCompound) other).handle);
+        return this;
+    }
+
+    @Override
+    public boolean applyToItemStack(@NotNull org.bukkit.inventory.ItemStack itemStack) {
+        ItemStack parsed = ItemStack.of(this.handle);
+        if (parsed == ItemStack.EMPTY) return false;
+
+        org.bukkit.inventory.ItemStack newItemStack = parsed.asBukkitMirror();
+        itemStack.setType(newItemStack.getType());
+        itemStack.setAmount(newItemStack.getAmount());
+        itemStack.setItemMeta(newItemStack.getItemMeta());
+        return true;
+    }
+
+    @Override
+    public boolean applyToEntity(@NotNull Entity entity) {
+        net.minecraft.world.entity.Entity nms = ((CraftEntity) entity).getHandle();
+        try {
+            nms.load(this.handle);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean applyToScoreboard(@NotNull Scoreboard scoreboard) {
+        ServerScoreboard nms = (ServerScoreboard) ((CraftScoreboard) scoreboard).getHandle();
+        nms.createData(this.handle);
+        return true;
+    }
+
+    @Override
+    public boolean saveToFile(@NotNull File file, boolean compressed) {
+        try {
+            if (compressed) NbtIo.writeCompressed(this.handle, file);
+            else NbtIo.write(this.handle, file);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean saveToPath(@NotNull Path path, boolean compressed) {
+        return saveToFile(path.toFile(), compressed);
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return this.handle.isEmpty();
+    }
+
+    @Override
+    public @NotNull Object getHandle() {
+        return this.handle;
+    }
+
+    public int hashCode() {
+        return this.handle.hashCode();
+    }
+
+    public boolean equals(Object obj) {
+        return obj == this || this.handle.equals(obj instanceof WorstNBTCompound w ? w.handle : obj);
+    }
+
+    public String toString() {
+        return this.handle.toString();
+    }
+}
