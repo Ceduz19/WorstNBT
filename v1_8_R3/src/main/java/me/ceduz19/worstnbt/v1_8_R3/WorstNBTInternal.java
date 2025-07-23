@@ -3,6 +3,9 @@ package me.ceduz19.worstnbt.v1_8_R3;
 import me.ceduz19.worstnbt.*;
 import me.ceduz19.worstnbt.internal.NBTInternal;
 import net.minecraft.server.v1_8_R3.*;
+import org.bukkit.block.BlockState;
+import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R3.block.CraftBlockState;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_8_R3.scoreboard.CraftScoreboard;
@@ -119,6 +122,17 @@ class WorstNBTInternal implements NBTInternal {
     public @NotNull NBTCompound fromItemStack(@NotNull ItemStack itemStack) {
         net.minecraft.server.v1_8_R3.ItemStack nms = CraftItemStack.asNMSCopy(itemStack);
         return new WorstNBTCompound(nms.save(new NBTTagCompound()));
+    }
+
+    @Override
+    public @NotNull NBTCompound fromBlock(@NotNull BlockState block) {
+        TileEntity tileEntity = ((CraftWorld) block.getWorld()).getTileEntityAt(block.getX(), block.getY(), block.getZ());
+        if (tileEntity == null) throw new IllegalStateException(block.getType() + " is not a tile entity");
+
+        NBTTagCompound compound = new NBTTagCompound();
+        tileEntity.b(compound);
+
+        return new WorstNBTCompound(compound);
     }
 
     @Override

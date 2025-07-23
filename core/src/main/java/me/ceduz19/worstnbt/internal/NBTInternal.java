@@ -1,6 +1,8 @@
 package me.ceduz19.worstnbt.internal;
 
 import me.ceduz19.worstnbt.*;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.TileState;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
@@ -44,6 +46,8 @@ public interface NBTInternal {
     @NotNull NBTString string(@NotNull String string);
 
     @NotNull NBTCompound fromItemStack(@NotNull ItemStack itemStack);
+
+    @NotNull NBTCompound fromBlock(@NotNull BlockState block);
 
     @NotNull NBTCompound fromEntity(@NotNull Entity entity);
 

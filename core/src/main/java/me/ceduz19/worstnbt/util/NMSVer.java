@@ -42,11 +42,19 @@ public enum NMSVer {
     }
 
     public boolean isBefore(@NotNull NMSVer ver) {
-        return this.ordinal() < ver.ordinal();
+        return compareTo(ver) < 0;
+    }
+
+    public boolean isUntil(@NotNull NMSVer ver) {
+        return compareTo(ver) <= 0;
     }
 
     public boolean isAfter(@NotNull NMSVer ver) {
-        return this.ordinal() > ver.ordinal();
+        return compareTo(ver) > 0;
+    }
+
+    public boolean isAtLeast(@NotNull NMSVer ver) {
+        return compareTo(ver) >= 0;
     }
 
     private boolean isOfMCVersion() {

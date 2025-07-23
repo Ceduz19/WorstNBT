@@ -5,16 +5,19 @@ import me.ceduz19.worstnbt.util.NMSVer;
 import me.ceduz19.worstnbt.util.Compatibility;
 import me.ceduz19.worstnbt.util.ReflectionUtils;
 import org.bukkit.Material;
+import org.bukkit.block.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 public final class WorstNBT {
 
@@ -124,8 +127,32 @@ public final class WorstNBT {
         checkCompatibility();
         Objects.requireNonNull(itemStack, "itemStack");
         if (itemStack.getType() == Material.AIR || itemStack.getAmount() <= 0)
-            throw new IllegalArgumentException("itemStack is air or amount is <= 0");
+            throw new IllegalArgumentException("itemStack type is air or its amount is <= 0");
         return INTERNAL.fromItemStack(itemStack);
+    }
+
+    private static final Class<? extends BlockState>[] TILE_ENTITIES;
+
+    private static @Nullable RuntimeException isTileEntity(@NotNull BlockState blockState) {
+        if (NMSVer.SERVER.isAtLeast(NMSVer.V1_14_R1))
+            return blockState instanceof TileState ? null : new IllegalArgumentException("block state must be an instance of " + TileState.class.getCanonicalName());
+
+        if (Stream.of(TILE_ENTITIES).anyMatch(c -> c.isInstance(blockState)) ||
+                blockState.getType() == Material.PISTON || blockState.getType() == Material.END_PORTAL)
+            return null;
+
+        return new IllegalArgumentException("block state must be one of the following blocks: ");
+    }
+
+    @NotNull
+    public static NBTCompound fromBlock(@NotNull BlockState block) {
+        checkCompatibility();
+        Objects.requireNonNull(block, "block");
+
+        RuntimeException ex = isTileEntity(block);
+        if (ex != null) throw ex;
+
+        return INTERNAL.fromBlock(block);
     }
 
     @NotNull
@@ -167,13 +194,25 @@ public final class WorstNBT {
     }
 
     static {
-        if (NMSVer.SERVER == NMSVer.UNKNOWN) {
+        if (!SUPPORTED) {
             INTERNAL = null;
         } else {
             String packageName = WorstNBT.class.getPackage().getName() + "." + NMSVer.SERVER;
             Class<?> clazz = ReflectionUtils.getClass(packageName + ".WorstNBTInternal");
             Constructor<?> constructor = clazz == null ? null : ReflectionUtils.getConstructor(clazz, true);
             INTERNAL = constructor == null ? null : (NBTInternal) ReflectionUtils.invokeConstructor(constructor, new Object[0]);
+        }
+
+        if (NMSVer.SERVER.isAtLeast(NMSVer.V1_14_R1)) {
+            TILE_ENTITIES = null;
+        } else {
+            //TODO check in which version classes are implemented (avoid no class found exception)
+            TILE_ENTITIES = new Class[] {
+                    Banner.class, Beacon.class, Bed.class, BrewingStand.class, Chest.class, CommandBlock.class,
+                    Conduit.class, DaylightDetector.class, Dispenser.class, Dropper.class, EnchantingTable.class,
+                    EnderChest.class, EndGateway.class, Furnace.class, Hopper.class, Jukebox.class, CreatureSpawner.class,
+                    ShulkerBox.class, Sign.class, Skull.class
+            };
         }
     }
 }

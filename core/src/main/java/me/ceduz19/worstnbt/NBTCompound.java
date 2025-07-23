@@ -1,5 +1,6 @@
 package me.ceduz19.worstnbt;
 
+import org.bukkit.block.TileState;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
@@ -24,6 +25,10 @@ public interface NBTCompound extends NBT {
 
     static @NotNull NBTCompound fromItemStack(@NotNull ItemStack itemStack) {
         return WorstNBT.fromItemStack(itemStack);
+    }
+
+    static @NotNull NBTCompound fromBlock(@NotNull TileState block) {
+        return WorstNBT.fromBlock(block);
     }
 
     static @NotNull NBTCompound fromEntity(@NotNull Entity entity) {
@@ -95,6 +100,8 @@ public interface NBTCompound extends NBT {
     }
 
     boolean saveToPath(@NotNull Path path, boolean compressed);
+
+    // UTILITY METHODS
 
     @Override
     default @NotNull NBTType getType() {
