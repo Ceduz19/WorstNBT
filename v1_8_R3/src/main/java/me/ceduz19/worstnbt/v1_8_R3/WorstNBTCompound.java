@@ -8,7 +8,6 @@ import net.minecraft.server.v1_8_R3.*;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_8_R3.scoreboard.CraftScoreboard;
-import org.bukkit.craftbukkit.v1_8_R3.util.CraftMagicNumbers;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
@@ -226,14 +225,9 @@ class WorstNBTCompound implements NBTCompound {
     }
 
     @Override
-    public boolean applyToItemStack(@NotNull ItemStack itemStack) {
-        net.minecraft.server.v1_8_R3.ItemStack nms = CraftItemStack.asNMSCopy(itemStack);
-        nms.c(handle);
-
-        itemStack.setType(CraftMagicNumbers.getMaterial(nms.getItem()));
-        itemStack.setAmount(nms.count);
-        itemStack.setItemMeta(CraftItemStack.asCraftMirror(nms).getItemMeta());
-        return true;
+    public @Nullable ItemStack createItemStack() {
+        net.minecraft.server.v1_8_R3.ItemStack i = net.minecraft.server.v1_8_R3.ItemStack.createStack(handle);
+        return i == null ? null : CraftItemStack.asCraftMirror(i);
     }
 
     @Override

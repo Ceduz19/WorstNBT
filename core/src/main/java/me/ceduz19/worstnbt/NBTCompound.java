@@ -89,7 +89,15 @@ public interface NBTCompound extends NBT {
 
     // APPLY METHODS
 
-    boolean applyToItemStack(@NotNull ItemStack itemStack);
+    default boolean applyToItemStack(@NotNull ItemStack itemStack) {
+        ItemStack created = createItemStack();
+        if (created == null) return false;
+
+        itemStack.setType(created.getType());
+        itemStack.setAmount(created.getAmount());
+        itemStack.setItemMeta(created.getItemMeta());
+        return true;
+    }
 
     boolean applyToEntity(@NotNull Entity entity);
 
@@ -100,6 +108,8 @@ public interface NBTCompound extends NBT {
     }
 
     boolean saveToPath(@NotNull Path path, boolean compressed);
+
+    @Nullable ItemStack createItemStack();
 
     // UTILITY METHODS
 

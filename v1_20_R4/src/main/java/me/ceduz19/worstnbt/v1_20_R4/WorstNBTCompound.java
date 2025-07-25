@@ -19,7 +19,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -217,15 +216,8 @@ class WorstNBTCompound implements NBTCompound {
     }
 
     @Override
-    public boolean applyToItemStack(@NotNull org.bukkit.inventory.ItemStack itemStack) {
-        Optional<ItemStack> opt = net.minecraft.world.item.ItemStack.parse(MinecraftServer.getServer().registries().compositeAccess(), this.handle);
-        if (opt.isEmpty()) return false;
-
-        org.bukkit.inventory.ItemStack newItemStack = opt.get().asBukkitMirror();
-        itemStack.setType(newItemStack.getType());
-        itemStack.setAmount(newItemStack.getAmount());
-        itemStack.setItemMeta(newItemStack.getItemMeta());
-        return true;
+    public org.bukkit.inventory.@Nullable ItemStack createItemStack() {
+        return ItemStack.parse(MinecraftServer.getServer().registries().compositeAccess(), this.handle).map(ItemStack::asBukkitMirror).orElse(null);
     }
 
     @Override
