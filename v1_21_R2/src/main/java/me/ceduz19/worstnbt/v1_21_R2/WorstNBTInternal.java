@@ -2,10 +2,15 @@ package me.ceduz19.worstnbt.v1_21_R2;
 
 import me.ceduz19.worstnbt.*;
 import me.ceduz19.worstnbt.internal.NBTInternal;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerScoreboard;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.LevelAccessor;
+import org.bukkit.block.BlockState;
+import org.bukkit.craftbukkit.CraftRegistry;
+import org.bukkit.craftbukkit.block.CraftBlockEntityState;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.scoreboard.CraftScoreboard;
@@ -125,6 +130,19 @@ class WorstNBTInternal implements NBTInternal {
     public @NotNull NBTCompound fromItemStack(@NotNull org.bukkit.inventory.ItemStack itemStack) {
         ItemStack nms = CraftItemStack.asNMSCopy(itemStack);
         return new WorstNBTCompound((CompoundTag) nms.save(MinecraftServer.getServer().registries().compositeAccess()));
+    }
+
+    @Override
+    public @NotNull NBTCompound fromBlock(@NotNull BlockState block) {
+        if (!(block instanceof CraftBlockEntityState<?> entityState))
+            throw new IllegalStateException(block.getClass().getCanonicalName() + " is not an instance of " +
+                    CraftBlockEntityState.class.getCanonicalName());
+
+        LevelAccessor worldHandle = entityState.getWorldHandle();
+        RegistryAccess registryAccess = worldHandle != null ? worldHandle.registryAccess() : CraftRegistry.getMinecraftRegistry();
+        CompoundTag compound = entityState.getTileEntity().saveWithFullMetadata(registryAccess);
+
+        return new WorstNBTCompound(compound);
     }
 
     @Override

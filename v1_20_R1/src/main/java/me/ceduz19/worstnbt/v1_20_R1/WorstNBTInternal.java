@@ -5,6 +5,8 @@ import me.ceduz19.worstnbt.internal.NBTInternal;
 import net.minecraft.nbt.*;
 import net.minecraft.server.ServerScoreboard;
 import net.minecraft.world.item.ItemStack;
+import org.bukkit.block.BlockState;
+import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlockEntityState;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_20_R1.scoreboard.CraftScoreboard;
@@ -123,6 +125,16 @@ class WorstNBTInternal implements NBTInternal {
     public @NotNull NBTCompound fromItemStack(@NotNull org.bukkit.inventory.ItemStack itemStack) {
         ItemStack nms = CraftItemStack.asNMSCopy(itemStack);
         return new WorstNBTCompound(nms.save(new CompoundTag()));
+    }
+
+    @Override
+    public @NotNull NBTCompound fromBlock(@NotNull BlockState block) {
+        if (!(block instanceof CraftBlockEntityState<?> entityState))
+            throw new IllegalStateException(block.getClass().getCanonicalName() + " is not an instance of " +
+                    CraftBlockEntityState.class.getCanonicalName());
+
+        CompoundTag compound = entityState.getTileEntity().saveWithFullMetadata();
+        return new WorstNBTCompound(compound);
     }
 
     @Override

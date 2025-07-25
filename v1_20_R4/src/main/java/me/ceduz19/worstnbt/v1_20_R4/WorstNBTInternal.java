@@ -2,10 +2,15 @@ package me.ceduz19.worstnbt.v1_20_R4;
 
 import me.ceduz19.worstnbt.*;
 import me.ceduz19.worstnbt.internal.NBTInternal;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerScoreboard;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.LevelAccessor;
+import org.bukkit.block.BlockState;
+import org.bukkit.craftbukkit.CraftRegistry;
+import org.bukkit.craftbukkit.block.CraftBlockEntityState;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.scoreboard.CraftScoreboard;
@@ -36,22 +41,23 @@ class WorstNBTInternal implements NBTInternal {
             throw new IllegalArgumentException("Unable to convert to worst NBT: " + nms.getClass().getCanonicalName() +
                     " is not an instance of " + Tag.class.getCanonicalName());
 
-        if (nms instanceof ByteArrayTag tag) return new WorstNBTCollection.ByteArray(tag);
-        if (nms instanceof CompoundTag tag) return new WorstNBTCompound(tag);
-        if (nms instanceof EndTag) return WorstNBTEnd.INSTANCE;
-        if (nms instanceof IntArrayTag tag) return new WorstNBTCollection.IntArray(tag);
-        if (nms instanceof ListTag tag) return new WorstNBTList(tag);
-        if (nms instanceof LongArrayTag tag) new WorstNBTCollection.LongArray(tag);
-        if (nms instanceof ByteTag tag) return new WorstNBTNumeric.Byte(tag);
-        if (nms instanceof ShortTag tag) return new WorstNBTNumeric.Short(tag);
-        if (nms instanceof IntTag tag) return new WorstNBTNumeric.Int(tag);
-        if (nms instanceof LongTag tag) return new WorstNBTNumeric.Long(tag);
-        if (nms instanceof FloatTag tag) return new WorstNBTNumeric.Float(tag);
-        if (nms instanceof DoubleTag tag) return new WorstNBTNumeric.Double(tag);
-        if (nms instanceof StringTag tag) return new WorstNBTString(tag);
-
-        throw new IllegalStateException("Unable to convert to worst NBT: " + nms.getClass().getCanonicalName() +
+        return switch (nms) {
+            case ByteArrayTag tag -> new WorstNBTCollection.ByteArray(tag);
+            case CompoundTag tag -> new WorstNBTCompound(tag);
+            case EndTag endTag -> WorstNBTEnd.INSTANCE;
+            case IntArrayTag tag -> new WorstNBTCollection.IntArray(tag);
+            case ListTag tag -> new WorstNBTList(tag);
+            case LongArrayTag tag -> new WorstNBTCollection.LongArray(tag);
+            case ByteTag tag -> new WorstNBTNumeric.Byte(tag);
+            case ShortTag tag -> new WorstNBTNumeric.Short(tag);
+            case IntTag tag -> new WorstNBTNumeric.Int(tag);
+            case LongTag tag -> new WorstNBTNumeric.Long(tag);
+            case FloatTag tag -> new WorstNBTNumeric.Float(tag);
+            case DoubleTag tag -> new WorstNBTNumeric.Double(tag);
+            case StringTag tag -> new WorstNBTString(tag);
+            default -> throw new IllegalStateException("Unable to convert to worst NBT: " + nms.getClass().getCanonicalName() +
                     " is an unknown " + Tag.class.getCanonicalName() + " implementation");
+        };
     }
 
     @Override
@@ -124,6 +130,19 @@ class WorstNBTInternal implements NBTInternal {
     public @NotNull NBTCompound fromItemStack(@NotNull org.bukkit.inventory.ItemStack itemStack) {
         ItemStack nms = CraftItemStack.asNMSCopy(itemStack);
         return new WorstNBTCompound((CompoundTag) nms.save(MinecraftServer.getServer().registries().compositeAccess()));
+    }
+
+    @Override
+    public @NotNull NBTCompound fromBlock(@NotNull BlockState block) {
+        if (!(block instanceof CraftBlockEntityState<?> entityState))
+            throw new IllegalStateException(block.getClass().getCanonicalName() + " is not an instance of " +
+                    CraftBlockEntityState.class.getCanonicalName());
+
+        LevelAccessor worldHandle = entityState.getWorldHandle();
+        RegistryAccess registryAccess = worldHandle != null ? worldHandle.registryAccess() : CraftRegistry.getMinecraftRegistry();
+        CompoundTag compound = entityState.getTileEntity().saveWithFullMetadata(registryAccess);
+
+        return new WorstNBTCompound(compound);
     }
 
     @Override

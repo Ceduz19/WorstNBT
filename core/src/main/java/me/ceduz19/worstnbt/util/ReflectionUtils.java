@@ -51,8 +51,18 @@ public final class ReflectionUtils {
     }
 
     public static @Nullable Object readField(@NotNull Field field, @Nullable Object instance) {
+        return _readField(field, instance, null);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> @Nullable T readField(@NotNull Field field, @Nullable Object instance, @NotNull Class<T> expectedType) {
+        return (T) _readField(field, instance, expectedType);
+    }
+
+    private static @Nullable Object _readField(@NotNull Field field, @Nullable Object instance, @Nullable Class<?> expectedType) {
         try {
-            return field.get(instance);
+            Object obj = field.get(instance);
+            return expectedType != null && expectedType.isInstance(obj) ? expectedType.cast(obj) : obj;
         } catch (Exception e) {
             return null;
         }

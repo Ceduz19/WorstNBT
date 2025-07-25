@@ -3,7 +3,10 @@ package me.ceduz19.worstnbt.v1_13_R1;
 import me.ceduz19.worstnbt.*;
 import me.ceduz19.worstnbt.NBTList;
 import me.ceduz19.worstnbt.internal.NBTInternal;
+import me.ceduz19.worstnbt.util.ReflectionUtils;
 import net.minecraft.server.v1_13_R1.*;
+import org.bukkit.block.BlockState;
+import org.bukkit.craftbukkit.v1_13_R1.block.CraftBlockEntityState;
 import org.bukkit.craftbukkit.v1_13_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_13_R1.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_13_R1.scoreboard.CraftScoreboard;
@@ -14,10 +17,12 @@ import org.jetbrains.annotations.NotNull;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 
 class WorstNBTInternal implements NBTInternal {
 
     private static WorstNBTInternal INSTANCE;
+    private static final Field TILE_ENTITY_FIELD = ReflectionUtils.getField(CraftBlockEntityState.class, "tileEntity", true);
 
     static WorstNBTInternal get() {
         if (INSTANCE == null) throw new IllegalStateException(WorstNBTInternal.class.getCanonicalName() + " not initialized");
@@ -121,6 +126,24 @@ class WorstNBTInternal implements NBTInternal {
     public @NotNull NBTCompound fromItemStack(@NotNull ItemStack itemStack) {
         net.minecraft.server.v1_13_R1.ItemStack nms = CraftItemStack.asNMSCopy(itemStack);
         return new WorstNBTCompound(nms.save(new NBTTagCompound()));
+    }
+
+    @Override
+    public @NotNull NBTCompound fromBlock(@NotNull BlockState block) {
+        if (!(block instanceof CraftBlockEntityState<?>))
+            throw new IllegalStateException(block.getClass().getCanonicalName() + " is not an instance of " +
+                    CraftBlockEntityState.class.getCanonicalName());
+
+        if (TILE_ENTITY_FIELD == null)
+            throw new IllegalStateException("unable to get nbt compound from tile entity: cannot get tileEntity field");
+
+        TileEntity tileEntity = ReflectionUtils.readField(TILE_ENTITY_FIELD, block, TileEntity.class);
+        if (tileEntity == null)
+            throw new IllegalStateException("unable to get nbt compound from tile entity: cannot read tileEntity field");
+
+        NBTTagCompound compound = new NBTTagCompound();
+        tileEntity.save(compound);
+        return new WorstNBTCompound(compound);
     }
 
     @Override
