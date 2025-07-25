@@ -16,6 +16,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -206,13 +208,19 @@ public final class WorstNBT {
         if (NMSVer.SERVER.isAtLeast(NMSVer.V1_14_R1)) {
             TILE_ENTITIES = null;
         } else {
-            //TODO check in which version classes are implemented (avoid no class found exception)
-            TILE_ENTITIES = new Class[] {
+            //noinspection deprecation
+            List<Class<? extends BlockState>> classes = Arrays.asList(
                     Banner.class, Beacon.class, Bed.class, BrewingStand.class, Chest.class, CommandBlock.class,
-                    Conduit.class, DaylightDetector.class, Dispenser.class, Dropper.class, EnchantingTable.class,
-                    EnderChest.class, EndGateway.class, Furnace.class, Hopper.class, Jukebox.class, CreatureSpawner.class,
-                    ShulkerBox.class, Sign.class, Skull.class
-            };
+                    DaylightDetector.class, Dispenser.class, Dropper.class, EnchantingTable.class, EnderChest.class,
+                    Furnace.class, Hopper.class, Jukebox.class, CreatureSpawner.class, Sign.class, Skull.class
+            );
+
+            if (NMSVer.SERVER.isAtLeast(NMSVer.V1_9_R1)) classes.add(EndGateway.class);
+            if (NMSVer.SERVER.isAtLeast(NMSVer.V1_11_R1)) classes.add(ShulkerBox.class);
+            if (NMSVer.SERVER.isAtLeast(NMSVer.V1_13_R1)) classes.add(Conduit.class);
+
+            //noinspection unchecked
+            TILE_ENTITIES = (Class<? extends BlockState>[]) classes.toArray(new Class[classes.size()]);
         }
     }
 }
