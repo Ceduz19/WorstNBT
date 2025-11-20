@@ -5,5 +5,4 @@ before_install:
   - sdk use java 21.0.2-open
 install:
   - echo "Running libShadowJar task"
-  - cd deploy
-  - ./gradlew libShadowJar
+  - ./gradlew :deploy:libShadowJar
